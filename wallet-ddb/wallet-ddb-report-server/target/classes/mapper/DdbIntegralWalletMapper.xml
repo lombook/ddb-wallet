@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.reportserver.mapper.DdbIntegralWalletMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbIntegralWallet" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="inte_name" property="inteName" jdbcType="VARCHAR" />
+    <result column="inte_cname" property="inteCname" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectByRealNameAdnCustId" resultMap="BaseResultMap">
+    select * from ddb_integral_wallet where cust_id = #{param2} and inte_name = #{param1}
+  </select>
+
+  <update id="addInteger">
+  	update  ddb_integral_wallet set amount = amount + #{param1} where inte_name=#{param2} and cust_id = #{param3}  and amount + #{param1} >= 0
+  </update>
+  
+  <insert id="insertBf">
+  INSERT INTO ddb_integral_wallet (
+	zid,
+	cust_id,
+	inte_cname,
+	inte_name,
+	amount,
+	create_time,
+	update_time
+) SELECT
+	zid,
+	cust_id,
+	'宝分',
+	'baofen_all',
+	baofen,
+	create_time,
+	update_time
+FROM
+	ddb_cust_integral_wallet
+  </insert>
+  
+  <select id="getAsset" resultType="com.jinglitong.wallet.ddbapi.model.view.DdbAssetDisplayVo">
+  	SELECT
+	cs.account,
+	t.inte_name as inteName,
+	t.cust_id as cid,
+	sum(
+		CASE t.inte_name
+		WHEN 'baofen_all' THEN
+			t.amount
+		ELSE
+			0
+		END
+	) AS 'baofen',
+	sum(
+		CASE t.inte_name
+		WHEN 'miaobei_all' THEN
+			t.amount
+		ELSE
+			0
+		END
+	) AS 'miaobei',
+	sum(
+		CASE t.inte_name
+		WHEN 'shubei_all' THEN
+			t.amount
+		ELSE
+			0
+		END
+	) AS 'shubei',
+	sum(
+		CASE t.inte_name
+		WHEN 'xianbei_all' THEN
+			t.amount
+		ELSE
+			0
+		END
+	) AS 'xianbei',
+	sum(
+		CASE t.inte_name
+		WHEN 'wubei_all' THEN
+			t.amount
+		ELSE
+			0
+		END
+	) AS 'wubei',
+	sum(
+		CASE t.inte_name
+		WHEN 'hezuo_all' THEN
+			t.amount
+		ELSE
+			0
+		END
+	) AS 'hezuo',
+	sum(
+		CASE t.inte_name
+		WHEN 'yumiao_all' THEN
+			t.amount
+		ELSE
+			0
+		END
+	) AS 'yumiao',
+	sum(
+		CASE t.inte_name
+		WHEN 'jinbei_all' THEN
+			t.amount
+		ELSE
+			0
+		END
+	) AS 'jinbei',
+   cs.created_time as createdTime
+	
+FROM
+	ddb_integral_wallet t LEFT JOIN customer cs on t.cust_id = cs.cust_id
+WHERE
+	cs.app_id = #{appId}   
+		<if test="account != '' and account != null">
+			and cs.account =#{account}
+		</if>
+GROUP BY
+	t.cust_id order by cs.created_time DESC
+  </select>
+  
+      <select id="getRecord" parameterType="com.jinglitong.wallet.ddbapi.model.view.DdbIntegralWalletVo" resultType="com.jinglitong.wallet.ddbapi.model.DdbCustIntegralRecord">
+SELECT
+    t.amount,
+	t.real_name as realName,
+	t.real_cname as realCname,
+	t.create_time as createTime,
+	o.shop_trade as flowId
+FROM
+	  ddb_cust_integral_record t 
+	  LEFT JOIN ddb_order o on t.flow_id = o.flow_id
+WHERE
+	t.cust_id =#{custId}
+AND t.integ_name = #{inteName}
+ORDER BY
+	t.create_time DESC
+  </select>
+</mapper>

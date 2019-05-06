@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbkjserver.mapper.DdbCustIntegralWalletMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbCustIntegralWallet" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="baofen" property="baofen" jdbcType="INTEGER" />
+    <result column="freez_baofen" property="freezBaofen" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+<update id="addBf" parameterType ="com.jinglitong.wallet.ddbapi.model.DdbCustIntegralWallet">
+	update ddb_cust_integral_wallet set 
+	<if test="baofen != null and baofen != ''">
+	baofen = baofen + #{baofen},
+	</if>
+	<if test="freezBaofen != null and freezBaofen != ''">
+	freez_baofen = freez_baofen + #{freezBaofen},
+	</if>
+	update_time =#{updateTime}
+	 where cust_id = #{custId}
+</update>
+
+
+    <select id="selectByCustId" resultMap="BaseResultMap">
+        select * from ddb_cust_integral_wallet where cust_id = #{custId}
+    </select>
+    
+   <resultMap id="WalletMap" type="java.util.HashMap" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="baofen" property="baofen" jdbcType="INTEGER" />
+    <result column="freez_baofen" property="freezBaofen" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+  </resultMap>
+    <select id="getIntegralWallet" resultMap="WalletMap">
+        select id,zid,cust_id,baofen,freez_baofen, DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time, 
+        DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') update_time from ddb_cust_integral_wallet where cust_id = #{custId}
+    </select>
+    
+    
+</mapper>

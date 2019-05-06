@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.CategoriesSpecGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.CategoriesSpecGroup" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="product_categories_id" property="productCategoriesId" jdbcType="INTEGER" />
+    <result column="spec_name" property="specName" jdbcType="VARCHAR" />
+    <result column="orders" property="orders" jdbcType="TINYINT" />
+  </resultMap>
+</mapper>

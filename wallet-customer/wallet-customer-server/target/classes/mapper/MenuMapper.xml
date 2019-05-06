@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.server.mapper.MenuMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.Menu" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="menu_id" property="menuId" jdbcType="VARCHAR" />
+    <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+    <result column="menu_type" property="menuType" jdbcType="VARCHAR" />
+    <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+    <result column="menu_code" property="menuCode" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="parent_ids" property="parentIds" jdbcType="VARCHAR" />
+    <result column="child_num" property="childNum" jdbcType="INTEGER" />
+    <result column="listorder" property="listorder" jdbcType="INTEGER" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="findMenuCodeByUserId" parameterType="String" resultType="java.lang.String">
+    select m.menu_code from menu m , role_menu rm, admin_role ar where ar.admin_id =#{id} and m.menu_id = rm.menu_id and rm.role_id = ar.role_id
+  </select>
+
+  <select id="getALLMenuCode" parameterType="String" resultType="java.lang.String">
+    select menu_code from menu
+  </select>
+
+
+</mapper>

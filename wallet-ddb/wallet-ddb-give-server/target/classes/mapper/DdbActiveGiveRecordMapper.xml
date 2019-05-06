@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.give.mapper.DdbActiveGiveRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbActiveGiveRecord" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR" />
+    <result column="active_rule_id" property="activeRuleId" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="product_price" property="productPrice" jdbcType="INTEGER" />
+    <result column="percent" property="percent" jdbcType="DECIMAL" />
+    <result column="mei_price" property="meiPrice" jdbcType="VARCHAR" />
+    <result column="inte_name" property="inteName" jdbcType="VARCHAR" />
+    <result column="inte_amount" property="inteAmount" jdbcType="VARCHAR" />
+    <result column="rate" property="rate" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+ 
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.DdbIntegralWalletMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbIntegralWallet" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="inte_name" property="inteName" jdbcType="VARCHAR" />
+    <result column="inte_cname" property="inteCname" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectByRealNameAdnCustId" resultMap="BaseResultMap">
+    select * from ddb_integral_wallet where cust_id = #{param2} and inte_name = #{param1}
+  </select>
+
+    <select id="selectByCustId" resultMap="BaseResultMap">
+        select * from ddb_integral_wallet where cust_id = #{custId}
+    </select>
+
+  <update id="addInteger">
+  	update  ddb_integral_wallet set amount = amount + #{param1} where inte_name=#{param2} and cust_id = #{param3}  and amount + #{param1} >= 0
+  </update>
+
+
+
+  <insert id="insertBf">
+  INSERT INTO ddb_integral_wallet (
+	zid,
+	cust_id,
+	inte_cname,
+	inte_name,
+	amount,
+	create_time,
+	update_time
+) SELECT
+	zid,
+	cust_id,
+	'宝分',
+	'baofen_all',
+	baofen,
+	create_time,
+	update_time
+FROM
+	ddb_cust_integral_wallet
+  </insert>
+  
+</mapper>

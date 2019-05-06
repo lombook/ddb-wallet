@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.job.mapper.DdbCustIntegralRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbCustIntegralRecord" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="INTEGER" />
+    <result column="inte_zid" property="inteZid" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="real_cname" property="realCname" jdbcType="VARCHAR" />
+    <result column="integ_name" property="integName" jdbcType="VARCHAR" />
+    <result column="integ_cname" property="integCname" jdbcType="VARCHAR" />
+    <result column="cost_type" property="costType" jdbcType="INTEGER" />
+    <result column="hash" property="hash" jdbcType="VARCHAR" />
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+     <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="RecordMap" type="map" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="baofen" property="baofen" jdbcType="INTEGER" />
+    <result column="cost_type" property="costType" jdbcType="INTEGER" />
+    <result column="hash" property="hash" jdbcType="VARCHAR" />
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getIntegralRecord" resultMap="RecordMap">
+  	select id,zid,cust_id,baofen,cost_type,hash,flow_id,remark,DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+  	DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') update_time from ddb_cust_integral_record where cust_id=#{custId}
+  </select>
+  
+  <select id="getAssetsRecord" resultMap="BaseResultMap" parameterType="com.jinglitong.wallet.ddbapi.model.DdbCustIntegralRecord">
+	
+	select id,zid,cust_id,cost_type,hash,flow_id,amount,integ_name,real_name,remark,DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time
+	 from ddb_cust_integral_record 
+	
+		<where>
+            <if test="integName!=null and integName!=''">
+                and integ_name = #{integName}
+            </if>
+             <if test="custId!=null and custId!=''">
+                and cust_id = #{custId}
+            </if>
+        </where>
+        
+        ORDER BY create_time DESC
+	</select>
+  
+  
+  
+  
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.give.mapper.AppNoticeMapper">
+    <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.AppNotice">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="notice_id" jdbcType="VARCHAR" property="noticeId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="sub_title" jdbcType="VARCHAR" property="subTitle"/>
+        <result column="is_top" jdbcType="BIT" property="isTop"/>
+        <result column="order_top" jdbcType="INTEGER" property="orderTop"/>
+        <result column="notice_type" jdbcType="VARCHAR" property="noticeType"/>
+        <result column="notice_img" jdbcType="VARCHAR" property="noticeImg"/>
+        <result column="state" jdbcType="BIT" property="state"/>
+        <result column="view_ctime" jdbcType="TIMESTAMP" property="viewCtime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="body" jdbcType="LONGVARCHAR" property="body"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="votMap" type="com.jinglitong.wallet.api.model.view.AppNoticeVO">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="notice_id" jdbcType="VARCHAR" property="noticeId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="sub_title" jdbcType="VARCHAR" property="subTitle"/>
+        <result column="is_top" jdbcType="BIT" property="isTop"/>
+        <result column="order_top" jdbcType="INTEGER" property="orderTop"/>
+        <result column="notice_type" jdbcType="VARCHAR" property="noticeType"/>
+        <result column="notice_img" jdbcType="VARCHAR" property="noticeImg"/>
+        <result column="state" jdbcType="BIT" property="state"/>
+        <result column="view_ctime" jdbcType="TIMESTAMP" property="viewCtime"/>
+        <result column="body" jdbcType="LONGVARCHAR" property="body"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+        <result column="wallet_name" property="walletName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="getNoticeList" resultMap="votMap">
+        select a.*,aw.wallet_name from app_notice a left join app_wallet aw on a.app_id = aw.zid
+        <where>
+            <if test="title !=null and title != ''">
+                and a.title like CONCAT('%',#{title},'%' )
+            </if>
+            <if test="body !=null and body != ''">
+                and a.body like CONCAT('%',#{body},'%' )
+            </if>
+            <if test="subTitle!=null and subTitle!=''">
+                and a.sub_title = CONCAT('%',#{subTitle},'%' )
+            </if>
+            <if test="isTop!=null and isTop!=''">
+                and a.is_top = #{isTop}
+            </if>
+            <if test="state!=null and state!=''">
+                and a.state = #{state}
+            </if>
+            <if test="appId!=null and appId!=''">
+                and a.app_id = #{appId}
+            </if>
+        </where>
+        ORDER BY a.is_top DESC ,a.order_top DESC ,a.update_time DESC, a.create_time
+    </select>
+    
+    <update id="deleteBannerRelation">
+    	update app_banner set click_id=null where click_id=#{id}
+    </update>
+</mapper>

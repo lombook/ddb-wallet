@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.server.mapper.AppNoticeSubMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.AppNoticeSub">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="notice_id" jdbcType="VARCHAR" property="noticeId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
+    <result column="is_top" jdbcType="BIT" property="isTop" />
+    <result column="order_top" jdbcType="INTEGER" property="orderTop" />
+    <result column="notice_type" jdbcType="VARCHAR" property="noticeType" />
+    <result column="notice_img" jdbcType="VARCHAR" property="noticeImg" />
+    <result column="state" jdbcType="BIT" property="state" />
+    <result column="view_ctime" jdbcType="TIMESTAMP" property="viewCtime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="is_push" jdbcType="BIT" property="isPush" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="sub_type" jdbcType="VARCHAR" property="subType" />
+    <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+    <result column="body" jdbcType="LONGVARCHAR" property="body" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.job.mapper.FrozenReleaseMiddlePayMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.FrozenReleaseMiddlePay">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="to_address" jdbcType="VARCHAR" property="toAddress" />
+    <result column="from_address" jdbcType="VARCHAR" property="fromAddress" />
+    <result column="amount" jdbcType="VARCHAR" property="amount" />
+    <result column="pre_send_amount" jdbcType="VARCHAR" property="preSendAmount" />
+    <result column="suf_send_amount" jdbcType="VARCHAR" property="sufSendAmount" />
+    <result column="source_amount" jdbcType="VARCHAR" property="sourceAmount" />
+    <result column="proportion" jdbcType="INTEGER" property="proportion" />
+    <result column="coin_name" jdbcType="VARCHAR" property="coinName" />
+    <result column="execut_time" jdbcType="TIMESTAMP" property="executTime" />
+    <result column="rule_id" jdbcType="VARCHAR" property="ruleId" />
+    <result column="wallet_id" jdbcType="VARCHAR" property="walletId" />
+    <result column="memos" jdbcType="VARCHAR" property="memos" />
+    <result column="trade_hash" jdbcType="VARCHAR" property="tradeHash" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="token_address" jdbcType="VARCHAR" property="tokenAddress" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+    <result column="detail_id" jdbcType="VARCHAR" property="detailId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <select id="selectMiddleByDetailIdAndSourceId" resultMap="BaseResultMap">
+    select * from frozen_release_middle_pay where detail_id = #{detailId} and source_id = #{sourceId}
+  </select>
+
+  <select id="selectByState" resultMap="BaseResultMap">
+    select * from frozen_release_middle_pay where status = 0 or status = 1 limit 1000
+  </select>
+
+  <select id="selectByWrid" resultMap="BaseResultMap">
+    select * from frozen_release_middle_pay where  rule_id = #{ruleId} and wallet_id = #{walletId}
+  </select>
+</mapper>

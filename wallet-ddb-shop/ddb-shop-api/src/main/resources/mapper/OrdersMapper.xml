@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.OrdersMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Orders" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="areaName" property="areaname" jdbcType="VARCHAR" />
+    <result column="completeDate" property="completedate" jdbcType="TIMESTAMP" />
+    <result column="consignee" property="consignee" jdbcType="VARCHAR" />
+    <result column="expire" property="expire" jdbcType="TIMESTAMP" />
+    <result column="freight" property="freight" jdbcType="DECIMAL" />
+    <result column="invoiceContent" property="invoicecontent" jdbcType="VARCHAR" />
+    <result column="invoiceTitle" property="invoicetitle" jdbcType="VARCHAR" />
+    <result column="isAllocatedStock" property="isallocatedstock" jdbcType="BIT" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="offsetAmount" property="offsetamount" jdbcType="DECIMAL" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="shippingMethodName" property="shippingmethodname" jdbcType="VARCHAR" />
+    <result column="sn" property="sn" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="weight" property="weight" jdbcType="INTEGER" />
+    <result column="zipCode" property="zipcode" jdbcType="VARCHAR" />
+    <result column="area_id" property="areaId" jdbcType="INTEGER" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="shippingMethod_id" property="shippingmethodId" jdbcType="VARCHAR" />
+    <result column="store_id" property="storeId" jdbcType="VARCHAR" />
+    <result column="currency_id" property="currencyId" jdbcType="VARCHAR" />
+    <result column="order_parent" property="orderParent" jdbcType="VARCHAR" />
+    <result column="order_hash" property="orderHash" jdbcType="VARCHAR" />
+    <result column="integral_c_id" property="integralCId" jdbcType="VARCHAR" />
+    <result column="price_code" property="priceCode" jdbcType="VARCHAR" />
+    <result column="integral_code" property="integralCode" jdbcType="VARCHAR" />
+    <result column="integral_price" property="integralPrice" jdbcType="DECIMAL" />
+    <result column="s_value" property="sValue" jdbcType="DECIMAL" />
+    <result column="djb_value" property="djbValue" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="orderVoList" type="com.jinglitong.springshop.vo.request.OrderVO">
+    <result column="pzid" property="pzid" jdbcType="VARCHAR" />
+    <result column="psn" property="psn" jdbcType="VARCHAR" />
+    <result column="currencySign" property="currency" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <collection property="orderIteamVOList" ofType="com.jinglitong.springshop.vo.request.OrderIteamVO">
+      <result column="odzid" property="zid" jdbcType="VARCHAR" />
+      <result column="thumbnail" property="thumbnail" jdbcType="VARCHAR" />
+      <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+  <select id="getOrderList" resultMap="orderVoList">
+    select os.zid pzid,os.sn psn,os.create_time,os.status,cy.currencySign  from orders os
+    LEFT JOIN currency cy
+    on os.currency_id = cy.zid
+    where os.cust_id = #{zid}
+    and os.order_parent = 'P'
+    <if test="status != null and status == 1 ">
+      and (os.status = #{status} or os.status = 6)
+    </if>
+    <if test="status != null and status != 1 ">
+      and os.status = #{status}
+    </if>
+    order by os.create_time DESC
+  </select>
+
+  <select id="selectCountBystatusAndCustId" resultType="java.lang.Integer">
+    select count(0) from orders
+    where 1=1
+
+     <if test="zid != null">
+       and order_parent = #{zid}
+     </if>
+    <if test="custId != null">
+      and cust_id = #{custId}
+    </if>
+    <if test="status != null">
+      and status = #{status}
+    </if>
+    <if test="updateDate != null">
+      and #{updateDate} > update_time
+    </if>
+
+  </select>
+  <select id="selectByZid" resultType="com.jinglitong.springshop.entity.Orders">
+    select * from orders where zid = #{pzid}
+  </select>
+
+  <select id="selectPSByZid" resultType="com.jinglitong.springshop.entity.Orders">
+    select * from orders where zid = #{pzid} or order_parent = #{pzid}
+  </select>
+
+  <select id="selectPayMentNameByOrderId" resultType="java.util.Map">
+    select paymentPluginName from orders os
+    LEFT JOIN paymenttransaction pn
+    on os.zid = pn.order_id
+    where os.zid = #{zid} and paymentPluginName is not null;
+  </select>
+
+    <select id="selectCountByParentOrder" resultType="java.lang.Integer"
+            parameterType="java.lang.String">
+		SELECT
+		COUNT(o.zid)
+		FROM
+		orders o
+		LEFT JOIN ordershipping os
+		ON o.zid = os.order_id
+		LEFT JOIN ordershippingitem osi ON
+		osi.orderShipping_id = os.zid
+		WHERE
+		o.order_parent = #{orderParent}
+		AND
+		osi.isDelivery = 1
+	</select>
+  <select id="selectExpireOrder" resultType="com.jinglitong.springshop.entity.Orders">
+    select * from orders where   NOW() > expire and `status` = 0
+    order by expire
+    limit 100
+  </select>
+
+  <select id="selectByUpdateTime" resultType="com.jinglitong.springshop.entity.Orders">
+    select * from orders
+    where  1=1 and  status = 1 and order_parent = 'P'
+    <if test="date != null">
+     and  #{date} > update_time
+    </if>
+    order by update_time DESC
+  </select>
+
+    <select id="selectChildOrder" parameterType="java.lang.String" resultType="com.jinglitong.springshop.vo.response.OrderPushChildVo">
+		SELECT
+		o.zid as orderId,
+		s.sn as goodSn
+		FROM
+		orders o
+		LEFT JOIN orderitem oi ON o.zid = oi.orders_id
+		LEFT JOIN sku s ON s.zid = oi.sku_id
+		LEFT JOIN product p ON p.zid = s.product_id
+		WHERE
+		o.order_parent = #{orderId}
+
+	</select>
+
+	<select id="selectIetOrder" parameterType="java.lang.String"
+		resultType="com.jinglitong.springshop.vo.response.IetOrderVo">
+		SELECT
+		o.zid AS orderId,
+		s.sn AS goodSn,
+		oi.quantity AS quantity,
+		o.areaName,
+		o.address,
+		o.consignee,
+		o.phone
+		FROM
+		orders o
+		LEFT JOIN orderitem oi ON o.zid = oi.orders_id
+		LEFT JOIN sku s ON s.zid = oi.sku_id
+		LEFT JOIN store st ON st.zid = o.store_id
+		WHERE
+		o.order_parent = #{orderId} and st.zid = 'iet'
+
+	</select>
+	<update id="batchUpdateOrderStatusAfterPayCallBack" >	
+		update orders
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="status =case" suffix="end,">
+                <foreach collection="list" item="order">
+                    <if test="order.status!=null">
+                        when zid=#{order.zid} then #{order.status}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="expire =case" suffix="end,">
+                <foreach collection="list" item="order">
+                        when zid=#{order.zid} then #{order.expire}
+                </foreach>
+            </trim>
+            <trim prefix="update_time =case" suffix="end,">
+                <foreach collection="list" item="order">
+                	<if test="order.status!=null">
+                        when zid=#{order.zid} then #{order.updateTime}
+                    </if>
+                </foreach>
+            </trim>
+           </trim>
+          <where>
+            <foreach collection="list" separator="or" item="order">
+                zid = #{order.zid}
+            </foreach>
+        </where>
+	</update>
+	
+	<update id="batchUpdateOrderReceiver" >	
+		update orders
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="address =case" suffix="end,">
+                <foreach collection="list" item="order">
+                        when zid=#{order.zid} then #{order.address}
+                </foreach>
+            </trim>
+            <trim prefix="areaName =case" suffix="end,">
+                <foreach collection="list" item="order">
+                        when zid=#{order.zid} then #{order.areaname}
+                </foreach>
+            </trim>
+            <trim prefix="consignee =case" suffix="end,">
+                <foreach collection="list" item="order">
+                        when zid=#{order.zid} then #{order.consignee}
+                </foreach>
+            </trim>
+            <trim prefix="phone =case" suffix="end,">
+                <foreach collection="list" item="order">
+                        when zid=#{order.zid} then #{order.phone}
+                </foreach>
+            </trim>
+            <trim prefix="zipCode =case" suffix="end,">
+                <foreach collection="list" item="order">
+                        when zid=#{order.zid} then #{order.zipcode}
+                </foreach>
+            </trim>
+            <trim prefix="area_id =case" suffix="end,">
+                <foreach collection="list" item="order">
+                        when zid=#{order.zid} then #{order.areaId}
+                </foreach>
+            </trim>
+            <trim prefix="update_time =case" suffix="end,">
+                <foreach collection="list" item="order">
+                        when zid=#{order.zid} then #{order.updateTime}
+                </foreach>
+            </trim>
+           </trim>
+          <where>
+            <foreach collection="list" separator="or" item="order">
+                zid = #{order.zid}
+            </foreach>
+        </where>
+	</update>
+
+  <select id="selectOrdersList" resultType="map">
+    select s.zid orderZid,s.amount,s.address,s.areaName,s.completeDate,s.consignee,s.expire,s.memo,s.phone,s.price,s.shippingMethodName,s.sn,s.weight,s.zipCode,s.`status`,s.order_hash,
+    s.integral_code,s.integral_price,cy.currencyUnit,cy.currencySign,c.account,date_format(s.create_time,'%Y-%m-%d %H:%i:%s') create_time,date_format(s.update_time,'%Y-%m-%d %H:%i:%s') update_time
+    from orders s
+    left join customer c
+    on s.cust_id = c.cust_id
+    LEFT JOIN currency cy
+    on s.currency_id = cy.zid
+    where s.order_parent = 'P'
+    <if test="startTime != null and startTime != ''">
+      and s.create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+      and s.create_time &lt;=#{endTime}
+    </if>
+    <if test="sn != null and sn != ''">
+      and s.sn like #{sn}
+    </if>
+    <if test="phone != null and phone != ''">
+      and s.phone like #{phone}
+    </if>
+    <if test="status != null ">
+      and s.status like #{status}
+    </if>
+    <if test="account != null and account != ''">
+      and c.account like #{account}
+    </if>
+    order by s.create_time DESC
+
+  </select>
+  
+  <update id="updateProductSellNum" >	
+		update product
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="sell_num =case" suffix="end,">
+                <foreach collection="list" item="map">
+                        when zid=#{map.zid} then sell_num + #{map.num}
+                </foreach>
+            </trim>
+           </trim>
+          <where>
+            <foreach collection="list" separator="or" item="map">
+                zid = #{map.zid}
+            </foreach>
+        </where>
+	</update>
+	
+	<select id="selelctSellNumByOrder" resultType="map">	
+	SELECT p.zid, SUM(ot.quantity ) as num 
+		from orders o, orderitem ot,sku s,product p 
+			where o.zid = ot.orders_id and 
+				ot.sku_id = s.zid and 
+				s.product_id = p.zid AND 
+				o.zid=#{orderId}
+				group by p.zid
+	</select>
+
+    <select id="selectByCustIdAndStatus" resultMap="BaseResultMap">
+        select * from orders
+        where 1=1
+        <if test="custId != null and custId != ''">
+            and cust_id = #{custId}
+        </if>
+        <if test="status != null and status != ''">
+            and (status = #{status}
+        </if>
+        <if test="status1 != null and status1 != ''">
+            or status = #{status1} )
+        </if>
+    </select>
+    
+    <select id="selectForeignByCustIdAndStatus" resultMap="BaseResultMap">
+        select * from orders
+        where 1=1
+        <if test="custId != null and custId != ''">
+            and cust_id = #{custId}
+        </if>
+        <if test="status != null and status != ''">
+            and (status = #{status}
+        </if>
+        <if test="currencyId != null and currencyId != ''">
+            and currency_id = #{currencyId} )
+        </if>
+    </select>
+
+<select id="selectOrderByStatus" resultType="string">
+	SELECT
+	zid
+	FROM
+	orders o
+	WHERE
+	NOT EXISTS (
+	SELECT
+	*
+	FROM
+	send_record s
+	WHERE
+	s.flow_id = o.zid
+	)
+	AND o.`status` = 3
+</select>
+
+<select id="selectCurrencyCodeByOrder" resultType="string">
+	select c.currencyCode  from currency c,orders o
+	where
+		o.currency_id = c.zid
+		and o.zid = #{orderId}
+</select>
+<select id="getOrderShipping" resultType="com.jinglitong.springshop.vo.response.OrderDetailShippingVo">
+	select op.zid,op.deliveryCorp,op.trackingNo,op.created_time createTime from orders o,ordershipping op 
+	where
+		o.zid = op.order_id
+		and o.sn = #{orderSn}
+</select>
+<select id="selectExpireParentOrder" resultMap="BaseResultMap">
+	select * from orders where expire &lt; NOW() and status = 0 and order_parent='P'
+</select>
+
+<select id="selectOrderBySuppl" parameterType="com.jinglitong.springshop.vo.response.SupplierOrderVo" resultType="com.jinglitong.springshop.vo.response.SupplierOrderVo">
+
+	SELECT
+	os.zid,
+	c.account,
+	os.sn,
+	os.create_time as createTime,
+	ot.`name`,
+	ot.quantity,
+	ot.price * ot.quantity as price,
+	ot.price_code as priceCode,
+	ot.integral_price * ot.quantity as integralPrice,
+	ot.integral_code as integralCode,
+	ot.thumbnail,
+	os.consignee,
+	os.phone,
+	os.address,
+	os.areaName,
+	os.`status`,
+	op.deliveryCorp,
+	op.trackingNo,
+	op.created_time as deliveryTime,
+	os.completeDate
+	FROM
+	orders os
+	join business bu on bu.store_id = os.store_id
+	LEFT JOIN orderitem ot ON ot.orders_id = os.zid
+	LEFT JOIN customer c ON os.cust_id = c.cust_id
+	LEFT JOIN ordershipping op ON op.order_id = os.zid
+	WHERE
+	os.`status` = #{status} and bu.zid = #{businessZid}
+	<if test="account != null and account != '' ">
+	 	and c.account = #{account}
+	</if>
+	<if test="sn != null and sn != '' ">
+	 	and os.sn = #{sn}
+	</if>
+	<if test="consignee != null and consignee != '' ">
+	 	and os.consignee like concat('%',#{consignee},'%')
+	</if>
+	<if test="beginTime != null and beginTime != '' ">
+	 	and os.create_time &gt;= #{beginTime}
+	</if>
+   <if test="endTime != null and endTime != '' ">
+	 	and os.create_time &lt;= #{endTime}
+	</if>
+	<if test="status == 5">
+	 order by op.created_time desc
+	</if>
+	<if test="status == 4">
+	 order by os.create_time desc
+	</if>
+</select>
+
+<select id="selectCompleteOrderBySuppl" parameterType="com.jinglitong.springshop.vo.response.SupplierOrderVo" resultType="com.jinglitong.springshop.vo.response.SupplierOrderVo">
+
+	SELECT
+	os.zid,
+	c.account,
+	os.sn,
+	os.create_time as createTime,
+	ot.`name`,
+	ot.quantity,
+	ot.price * ot.quantity as price,
+	ot.price_code as priceCode,
+	ot.integral_price * ot.quantity as integralPrice,
+	ot.integral_code as integralCode,
+	ot.thumbnail,
+	os.consignee,
+	os.phone,
+	os.address,
+	os.areaName,
+	os.`status`,
+	op.deliveryCorp,
+	op.trackingNo,
+	op.created_time as deliveryTime,
+	os.completeDate
+	FROM
+	orders os
+	join business bu on bu.store_id = os.store_id
+	LEFT JOIN orderitem ot ON ot.orders_id = os.zid
+	LEFT JOIN customer c ON os.cust_id = c.cust_id
+	LEFT JOIN ordershipping op ON op.order_id = os.zid
+	LEFT JOIN orders oparent on oparent.zid = os.order_parent
+	WHERE
+	bu.zid = #{businessZid} and oparent.`status` = 3
+	<if test="account != null and account != '' ">
+	 	and c.account = #{account}
+	</if>
+	<if test="sn != null and sn != '' ">
+	 	and os.sn = #{sn}
+	</if>
+	<if test="consignee != null and consignee != '' ">
+	 	and os.consignee like concat('%',#{consignee},'%')
+	</if>
+	<if test="beginTime != null and beginTime != '' ">
+	 	and os.create_time &gt;= #{beginTime}
+	</if>
+   <if test="endTime != null and endTime != '' ">
+	 	and os.create_time &lt;= #{endTime}
+	</if>
+	order by os.completeDate desc
+</select>
+
+</mapper>

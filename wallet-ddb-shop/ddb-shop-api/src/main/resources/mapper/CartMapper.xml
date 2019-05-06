@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.CartMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Cart" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="client_id" property="clientId" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="expire" property="expire" jdbcType="TIMESTAMP" />
+    <result column="cartKey" property="cartkey" jdbcType="VARCHAR" />    
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+
+  <resultMap id="cartIteams" type="com.jinglitong.springshop.vo.response.CartResponseVo">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="skuZid" property="skuZid" jdbcType="VARCHAR" />
+   <!--  <result column="currencyItems" property="currencyItems" jdbcType="VARCHAR" /> -->
+    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="currency" property="currency" jdbcType="VARCHAR" />
+    <result column="isList" property="isList" jdbcType="INTEGER" />
+    <result column="integral_price" property="integralPrice" jdbcType="DECIMAL" />
+    <result column="integral_code" property="integralCode" jdbcType="VARCHAR" />
+    <result column="skuPriceId" property="skuPriceId" jdbcType="VARCHAR" />
+    <result column="priceCode" property="priceCode" jdbcType="VARCHAR" />
+    <result column="priceType" property="priceType" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <select id="selectCustomerCart" resultMap="cartIteams">
+    select ci.quantity,p.id id, p.zid zid,p.image image,p.`name` name,p.isList, s.id skuId,s.zid skuZid,
+    cy.currencySign currency , sp.price, sp.integral_price,sp.integral_code,sp.zid as skuPriceId,sp.price_code as priceCode,sp.price_type as priceType
+    from
+    cart c 
+    LEFT JOIN cart_items ci on c.zid = ci.cart_id
+    LEFT JOIN product p on ci.product_id = p.zid
+    LEFT JOIN sku s on ci.sku_id = s.zid
+    LEFT JOIN sku_price sp ON sp.zid = ci.sku_price_id
+    LEFT JOIN currency cy ON cy.zid = sp.currency_id
+    where 1=1
+    <if test="custId != '' and custId != null">
+      and c.cust_id = #{custId}
+    </if>
+    <if test="clientId != '' and clientId != null">
+      and c.client_id = #{clientId}
+    </if>
+    ORDER BY p.store_id,ci.created_time DESC
+  </select>
+
+  <select id="selectByCustIdOrClientId" resultMap="BaseResultMap">
+    select  * from cart where 1=1
+    <if test="custId != '' and custId != null">
+      and cust_id = #{custId}
+    </if>
+    <if test="clientId != '' and clientId != null">
+      and client_id = #{clientId}
+    </if>
+  </select>
+
+  <select id="calculateCart" resultType="map">
+    SELECT
+    p.`name` name,
+    p.image image,   
+    p.weight weight,
+    p.weight_unit weight_unit,
+    p.sn ,
+    p.store_id store,
+    c.currencySign currency,
+    c.currencyCode currencyCode,   
+    c.zid currencyId,
+    s.zid skuId,
+    s.specificationValues ,
+    sp.zid skuPriceId,
+    sp.price,
+    sp.price_code priceCode,
+    sp.integral_c_id integralCId,
+    sp.integral_price integralPrice,
+    sp.integral_code integralCode 
+    from sku_price sp 
+    LEFT JOIN sku s
+    on sp.sku_id = s.zid
+    LEFT JOIN product p
+    on s.product_id = p.zid
+    LEFT JOIN currency c
+    on s.currency_id = c.zid
+    where p.isList = 1 and  sp.zid in
+    <foreach item="item" collection="list" separator="," open="(" close=")" index="">
+      #{item.skuPriceId}
+    </foreach>
+  </select>
+
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.SkuMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Sku" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cost" property="cost" jdbcType="DECIMAL" />
+    <result column="isDefault" property="isdefault" jdbcType="BIT" />
+    <result column="marketPrice" property="marketprice" jdbcType="DECIMAL" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="sn" property="sn" jdbcType="VARCHAR" />
+    <result column="sell_out" property="sellOut" jdbcType="INTEGER" />
+    <result column="product_id" property="productId" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+    <result column="specificationValues" property="specificationvalues" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <select id="selectByZid" resultMap="BaseResultMap">
+    select * from sku where zid = #{zid}
+  </select>
+
+  <select id="selectByPriceAndWeight" resultType="map">
+     SELECT
+    p.`name` name,
+    p.image image,
+    s.zid skuId,
+    sp.price price,
+    sp.price_code priceCode,
+    sp.integral_c_id integralCId,
+    sp.integral_price integralPrice,
+    sp.integral_code integralCode,
+    p.weight weight,
+    p.weight_unit weight_unit,
+    p.sn ,
+    c.currencyUnit currency,
+    p.store_id store,
+    c.zid currencyId,
+    s.specificationValues from sku_price sp 
+    LEFT JOIN sku s
+    on sp.sku_id = s.zid 
+    LEFT JOIN product p
+    on s.product_id = p.zid
+    LEFT JOIN currency c
+    on s.currency_id = c.zid
+    where p.isList = 1 and  sp.zid = #{skuPriceId}
+  </select>
+  
+  <select id="selectStoreIdbyZid" resultType="string">
+  		select st.zid from sku_price sp left join sku s on sp.sku_id = s.zid left join product p on s.product_id = p.zid left join store st on p.store_id = st.zid 
+  		where sp.zid = #{zid}
+  </select>
+</mapper>

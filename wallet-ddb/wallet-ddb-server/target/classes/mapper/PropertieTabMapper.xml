@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.PropertieTabMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.PropertieTab" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="group_key" property="groupKey" jdbcType="VARCHAR" />
+    <result column="group_value" property="groupValue" jdbcType="VARCHAR" />
+    <result column="key_desc" property="keyDesc" jdbcType="VARCHAR" />
+    <result column="app_id" property="appId" jdbcType="BIGINT" />
+  </resultMap>
+
+  <select id="checkPropertie" resultMap="BaseResultMap">
+    select * from propertie_tab where  group_name = #{param2} and group_key=#{param1}
+  </select>
+
+  <select id="filterAboutManagement" resultType="java.util.Map">
+    select  pt.id,pt.app_id,pt.group_key,pt.group_name,pt.group_value,
+    pt.key_desc,pt.zid,aw.wallet_name from  propertie_tab  pt left join   app_wallet aw
+    on pt.app_id=aw.zid
+    <where>
+  group_name='about'
+  <if test="appId != null and appId != ''">
+    and app_id =#{appId}
+  </if>
+</where>
+  </select>
+</mapper>

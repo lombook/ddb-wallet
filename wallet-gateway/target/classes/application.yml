@@ -1,0 +1,69 @@
+server:
+  port: 10002
+  tomcat:
+    max-http-header-size: 3145728
+    max-connections: 2000
+    max-threads: 5000
+
+spring:
+  application:
+    name: wallet-gateway
+  profiles:
+    active: dev,@pf@
+  servlet:
+    multipart:
+      max-file-size: 100Mb
+      max-request-size: 100Mb
+
+
+logging:
+  config: classpath:logback.xml
+
+zuul:
+  routes:
+    wallet-customer:
+      path: /wallet-customer/**
+      serviceId: wallet-customer
+      sensitiveHeaders:
+      ribbon:
+        eager-load:
+          enabled: true
+        MaxAutoRetries: 1
+        MaxAutoRetriesNextServer: 2
+        OkToRetryOnAllOperations: false
+        ConnectTimeout: 120000
+        ReadTimeout: 120000
+    wallet-ddb:
+      path: /wallet-ddb/**
+      serviceId: wallet-ddb
+      sensitiveHeaders:
+      ribbon:
+        eager-load:
+          enabled: true
+        MaxAutoRetries: 1
+        MaxAutoRetriesNextServer: 2
+        OkToRetryOnAllOperations: false
+        ConnectTimeout: 120000
+        ReadTimeout: 120000
+
+  host:
+    socket-timeout-millis: 120000
+    connect-timeout-millis: 120000
+    max-total-connections: 2000
+    max-per-route-connections: 20
+    time-unit: milliseconds
+    time-to-live: 10000
+
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 120000
+
+
+#忽略appId url
+wallet:
+  ignori-url: /wallet-customer/console/login.json,/wallet-customer/customer/login.json,/wallet-customer/console/logout.json,/wallet-customer/customer/logout.json
+  ddb-pre-url: /wallet-ddb/sync/
+#  reject-url: /wallet-ddb/customer/ddb/fz/freeAmount.json,/wallet-ddb/customer/ddb/getRecords.json,/wallet-ddb/ddb/getStockRuleList.json,wallet-ddb/ddb/inteExchange.json
+  reject-url:
+default:
+  Referer : www.jinglitong.com

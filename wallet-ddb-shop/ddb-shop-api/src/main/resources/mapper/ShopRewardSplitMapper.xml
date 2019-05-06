@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.ShopRewardSplitMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.ShopRewardSplit" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR" />
+    <result column="reward_type" property="rewardType" jdbcType="VARCHAR" />
+    <result column="order_sn" property="orderSn" jdbcType="VARCHAR" />
+    <result column="integral_id" property="integralId" jdbcType="VARCHAR" />
+    <result column="real_cname" property="realCname" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="reward_percent" property="rewardPercent" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="DATE" />
+  </resultMap>
+  <insert id="saveShopRewardSplit"
+          parameterType="com.jinglitong.springshop.entity.ShopRewardSplit">
+      insert into shop_reward_split(
+            zid,
+            cust_id,
+            flow_id,
+            reward_type,
+            order_sn,
+            integral_id,
+            real_cname,
+            real_name,
+            reward_percent,
+            amount,
+            status,
+            create_time,
+            update_time
+      )
+      value(
+            #{zid },
+            #{custId},
+            #{flowId},
+            #{rewardType},
+            #{orderSn},
+            #{integralId},
+            #{realCname},
+            #{realName},
+            #{rewardPercent},
+            #{amount},
+            #{status},
+            CURRENT_TIMESTAMP(),
+            CURRENT_TIMESTAMP()
+      )
+  </insert>
+  <select id="getShopRewardSplitList"
+          resultMap="BaseResultMap">
+      select
+            id,
+            zid,
+            cust_id,
+            flow_id,
+            reward_type,
+            order_sn,
+            integral_id,
+            real_cname,
+            real_name,
+            reward_percent,
+            amount,
+            status,
+            create_time,
+            update_time
+        from shop_reward_split
+      where
+       flow_id = #{flowId}
+  </select>
+    <!--更新奖励拆分表中奖励状态-->
+  <update id="updateShopRewardSplit"
+          parameterType="com.jinglitong.springshop.entity.ShopRewardSplit">
+      update shop_reward_split
+          set
+              status = #{status},
+              update_time = CURRENT_TIMESTAMP()
+          where id = #{id}
+  </update>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.DdbIntegralWithdrawRuleMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbIntegralWithdrawRule">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="percent" jdbcType="DECIMAL" property="percent" />
+    <result column="min_amount" jdbcType="INTEGER" property="minAmount" />
+    <result column="integ_cname" jdbcType="VARCHAR" property="integCname" />
+    <result column="integ_name" jdbcType="VARCHAR" property="integName" />
+    <result column="integ_charge" jdbcType="INTEGER" property="integCharge" />
+    <result column="charge_integ_cname" jdbcType="VARCHAR" property="chargeIntegCname" />
+    <result column="charge_integ_name" jdbcType="VARCHAR" property="chargeIntegName" />
+    <result column="resave_integ_real_cname" jdbcType="VARCHAR" property="resaveIntegRealCname" />
+    <result column="resave_integ_real_name" jdbcType="VARCHAR" property="resaveIntegRealName" />
+    <result column="resave_charge_real_cname" jdbcType="VARCHAR" property="resaveChargeRealCname" />
+    <result column="resave_charge_real_name" jdbcType="VARCHAR" property="resaveChargeRealName" />
+    <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+    <result column="expiry_time" jdbcType="TIMESTAMP" property="expiryTime" />
+    <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
+  </resultMap>
+
+  <select id="selectByZid" resultMap="BaseResultMap">
+    select * from ddb_integral_withdraw_rule where zid = #{zid}
+  </select>
+
+
+	<select id="getRuleByName" parameterType="java.lang.String" resultType="com.jinglitong.wallet.ddbapi.model.view.DdbIntegralWithdrawRuleVo">
+	SELECT
+	r.zid,
+	r.rule_name AS ruleName,
+	r.percent,
+	r.min_amount AS minAmount,
+	r.integ_name AS integName,
+	r.charge_integ_cname as chargeIntegCname,
+	r.charge_integ_name AS chargeIntegName,
+	r.integ_charge AS integCharge,
+	r.resave_charge_real_name AS resaveChargeRealName,
+	r.resave_integ_real_name AS resaveIntegRealName,
+	s.integ_cname AS servicecName,
+	s.integ_name AS serviceName,
+	s.percent AS servicePercent,
+	s.resave_service_temp_cname AS resaveServiceTempCname,
+	s.resave_service_temp_name AS resaveServiceTempName,
+	s.resave_service_real_cname AS resaveServiceRealCname,
+	s.resave_service_real_name AS resaveServiceRealName
+	FROM
+	ddb_integral_withdraw_rule r
+	LEFT JOIN ddb_integral_withdraw_srule s ON r.zid = s.rule_id
+	WHERE
+	r.effective_time &lt;= now()
+	AND r.expiry_time &gt;= now()
+	AND r.rule_name = #{ruleName}
+	AND s.effective_time &lt;= now()
+	AND s.expiry_time &gt;= now()
+	</select>
+	
+	<select id="getRuleByZid" parameterType="java.lang.String" resultType="com.jinglitong.wallet.ddbapi.model.view.DdbIntegralWithdrawRuleVo">
+	SELECT
+	r.zid,
+	r.resave_integ_real_name AS resaveIntegRealName,
+	s.resave_service_temp_name AS resaveServiceTempName,
+	s.resave_service_real_name AS resaveServiceRealName
+	FROM
+	ddb_integral_withdraw_rule r
+	LEFT JOIN ddb_integral_withdraw_srule s ON r.zid = s.rule_id
+	WHERE
+ 	r.zid = #{zid}
+	</select>
+</mapper>

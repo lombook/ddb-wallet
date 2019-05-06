@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.DdbIntegralWithdrawRecordMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbIntegralWithdrawRecord">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="withdraw_rule_id" jdbcType="VARCHAR" property="withdrawRuleId" />
+    <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+    <result column="cardholder" jdbcType="VARCHAR" property="cardholder" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="active_address" jdbcType="VARCHAR" property="activeAddress" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="integ_amount" jdbcType="INTEGER" property="integAmount" />
+    <result column="integ_name" jdbcType="VARCHAR" property="integName" />
+    <result column="integ_charge" jdbcType="INTEGER" property="integCharge" />
+    <result column="integ_charge_name" jdbcType="VARCHAR" property="integChargeName" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="draw_status" jdbcType="INTEGER" property="drawStatus" />
+    <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
+      <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+      <result column="drawTime" jdbcType="TIMESTAMP" property="drawTime" />
+    <result column="auditor" jdbcType="VARCHAR" property="auditor" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+
+
+
+
+
+
+
+  <select id="selectByZid" resultMap="BaseResultMap">
+    select * from ddb_integral_withdraw_record where zid  = #{zid}
+  </select>
+  <resultMap id="WithdrawApplyInfo" type="com.jinglitong.wallet.ddbapi.model.view.IntegralWithdrawApplyVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="cardholder" jdbcType="VARCHAR" property="cardholder" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="draw_status" jdbcType="INTEGER" property="drawStatus" />
+    <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
+     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+     <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+  </resultMap>
+
+  <select id="getwithdrawApplyInfo" parameterType="com.jinglitong.wallet.ddbapi.model.view.IntegralWithdrawApplyVo" resultMap="WithdrawApplyInfo">
+
+  SELECT 	A.id,A.zid,A.withdraw_rule_id,A.cust_id, A.cardholder,A.card_no, A.amount, A.integ_amount, A.integ_name, A.integ_charge, A.integ_charge_name,
+	A.apply_status, A.draw_status, DATE_FORMAT(A.apply_time,'%Y-%c-%d %H:%i:%s') as apply_time ,A.auditor,A.remark, 
+	DATE_FORMAT(A.create_time,'%Y-%c-%d %H:%i:%s') as create_time, DATE_FORMAT(A.update_time,'%Y-%c-%d %H:%i:%s') as update_time,A.account,
+	DATE_FORMAT(A.audit_time,'%Y-%c-%d %H:%i:%s') as audit_time	FROM  ddb_integral_withdraw_record A
+	
+        <where> 
+<!--          A.apply_status in (0,2) -->
+            <if test="beginTime!='' and beginTime != null ">
+               and A.apply_time >= #{beginTime}
+            </if>
+            <if test="endTime != '' and  endTime != null">
+               and A.apply_time  &lt;= #{endTime}
+            </if>
+            <if test="applyStatus!=null and applyStatus!=''">
+                and A.apply_status = #{applyStatus}
+            </if>
+             <if test="applyStatus==null or applyStatus==''">
+                and A.apply_status in (0,1,2)
+            </if>
+            <if test="account!=null and account!=''">
+                and A.account like CONCAT(CONCAT('%',#{account},'%'))
+            </if>
+        </where>
+        order by A.apply_time DESC
+    </select>
+    
+    
+    
+    <select id="getwithdrawInfo" parameterType="com.jinglitong.wallet.ddbapi.model.view.IntegralWithdrawApplyVo" resultMap="WithdrawApplyInfo">
+
+  SELECT 	A.id,A.zid,A.withdraw_rule_id,A.cust_id, A.cardholder,A.card_no, A.amount, A.integ_amount, A.integ_name, A.integ_charge, A.integ_charge_name,
+	A.apply_status, A.draw_status, DATE_FORMAT(A.apply_time,'%Y-%c-%d %H:%i:%s') as apply_time ,A.auditor,A.remark, 
+	DATE_FORMAT(A.create_time,'%Y-%c-%d %H:%i:%s') as create_time, DATE_FORMAT(A.update_time,'%Y-%c-%d %H:%i:%s') as update_time,A.account,
+	DATE_FORMAT(A.audit_time,'%Y-%c-%d %H:%i:%s') as audit_time	FROM  ddb_integral_withdraw_record A
+	
+        <where>
+             A.apply_status = 1 
+            <if test="beginTime!='' and beginTime != null ">
+               and A.audit_time >= #{beginTime}
+            </if>
+            <if test="endTime != '' and  endTime != null">
+               and A.audit_time  &lt;= #{endTime}
+            </if>
+            <if test="drawStatus!=null and drawStatus!=''">
+                and A.draw_status = #{drawStatus}
+            </if>
+            <if test="drawStatus==null or drawStatus==''">
+                and A.draw_status in (0,1,2)
+            </if>
+            <if test="account!=null and account!=''">
+                and A.account like CONCAT(CONCAT('%',#{account},'%'))
+            </if>
+        </where>
+        order by A.audit_time DESC
+    </select>
+    
+    
+    <select id="getCustWithDrawRecord" parameterType ="com.jinglitong.wallet.ddbapi.model.view.DdbIntegralWithdrawRecordVo" resultMap="BaseResultMap">
+    select 	amount,
+	integ_amount,
+	integ_name,
+	integ_charge,
+	integ_charge_name,
+	apply_status,
+	draw_status,
+	DATE_FORMAT(
+		apply_time,
+		'%Y-%m-%d %H:%i:%s'
+	) AS apply_time
+	 from ddb_integral_withdraw_record where cust_id =#{custId} order by apply_time desc
+    </select>
+</mapper>

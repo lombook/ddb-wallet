@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.BusinessMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Business" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="balance" property="balance" jdbcType="DECIMAL" />
+    <result column="bankAccount" property="bankaccount" jdbcType="VARCHAR" />
+    <result column="bankName" property="bankname" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="frozenFund" property="frozenfund" jdbcType="DECIMAL" />
+    <result column="idCard" property="idcard" jdbcType="VARCHAR" />
+    <result column="idCardImage" property="idcardimage" jdbcType="VARCHAR" />
+    <result column="identificationNumber" property="identificationnumber" jdbcType="VARCHAR" />
+    <result column="legalPerson" property="legalperson" jdbcType="VARCHAR" />
+    <result column="licenseImage" property="licenseimage" jdbcType="VARCHAR" />
+    <result column="licenseNumber" property="licensenumber" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="organizationCode" property="organizationcode" jdbcType="VARCHAR" />
+    <result column="organizationImage" property="organizationimage" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="safeKeyValue" property="safekeyvalue" jdbcType="VARCHAR" />
+    <result column="taxImage" property="taximage" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+    <result column="store_id" property="storeId" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="listBusinessAndSupplier" resultType="com.jinglitong.springshop.vo.SupplierVO" >
+    select s.zid,s.name as storeName, b.username as businessName,b.state,b.zid as bZid
+      from business b left join store s on b.store_id=s.zid
+      where 1=1
+    <if test="bZid != null and bZid != ''">
+      and b.zid = #{bZid}
+    </if>
+  </select>
+
+  <select id="listSelectiveBusiness" resultType="com.jinglitong.springshop.vo.SupplierVO" parameterType="com.jinglitong.springshop.vo.BusiStoreVO">
+    select s.zid,s.name as storeName, b.username as businessName,b.state,b.zid as bZid
+    from business b left join store s on b.store_id=s.zid
+    where 1=1
+    <if test="businessName != null and businessName != ''">
+      and b.username like CONCAT('%',#{businessName},'%' )
+    </if>
+    <if test="state != null and state != ''">
+      and b.state = #{state}
+    </if>
+    <if test="storeName != null and storeName != ''">
+      and s.name like CONCAT('%',#{storeName},'%' )
+    </if>
+    <if test="bZid != null and bZid != ''">
+      and b.zid = #{bZid}
+    </if>
+  </select>
+
+</mapper>

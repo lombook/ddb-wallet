@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.job.mapper.DdbIntegralAccountMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbIntegralAccount" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="BIGINT" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="real_cname" property="realCname" jdbcType="VARCHAR" />
+    <result column="integ_name" property="integName" jdbcType="VARCHAR" />
+    <result column="integ_cname" property="integCname" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <update id="addBf">
+  	update  ddb_integral_account set amount = amount + #{amount} where zid =#{zid} and amount + #{amount} >= 0
+  </update>
+
+  <update id="addInteger">
+  	update  ddb_integral_account set amount = amount + #{amount} where zid =#{zid} and amount + #{amount} >= 0
+  </update>
+
+  <select id="selectAllExpireParentIdAndState" resultMap="BaseResultMap">
+    select * from ddb_integral_account where  (parent_id is null or parent_id = "")  and state = #{state}
+  </select>
+
+  <select id="selectByRealName" resultMap="BaseResultMap">
+    select * from ddb_integral_account where real_name = #{realName}
+  </select>
+
+</mapper>

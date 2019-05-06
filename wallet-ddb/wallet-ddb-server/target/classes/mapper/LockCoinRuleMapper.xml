@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.LockCoinRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.LockCoinRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="lock_rule_id" property="lockRuleId" jdbcType="VARCHAR" />
+    <result column="chain_id" property="chainId" jdbcType="VARCHAR" />
+    <result column="coin_id" property="coinId" jdbcType="VARCHAR" />
+    <result column="lock_days" property="lockDays" jdbcType="INTEGER" />
+    <result column="lock_rate" property="lockRate" jdbcType="INTEGER" />
+    <result column="lock_address" property="lockAddress" jdbcType="VARCHAR" />
+    <result column="min_lock_amout" property="minLockAmout" jdbcType="VARCHAR" />
+    <result column="rule_status" property="ruleStatus" jdbcType="BIT" />
+    <result column="address" property="address" jdbcType="VARCHAR"/>
+    <result column="secret"  property="secret" jdbcType="LONGVARCHAR"/>
+    <result column="cust_id"  property="custId" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="rule" type="com.jinglitong.wallet.api.model.logic.LockCoinRuleChainCoin" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="lock_rule_id" property="lockRuleId" jdbcType="VARCHAR" />
+    <result column="coin_id" property="coinId" jdbcType="VARCHAR" />
+    <result column="lock_days" property="lockDays" jdbcType="INTEGER" />
+    <result column="lock_rate" property="lockRate" jdbcType="INTEGER" />
+    <result column="lock_address" property="lockAddress" jdbcType="VARCHAR" />
+    <result column="min_lock_amout" property="minLockAmout" jdbcType="VARCHAR" />
+    <result column="rule_status" property="ruleStatus" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="walletName" property="walletName" jdbcType="VARCHAR" />
+    <association property="mainChain" column="chain_id"
+                 select="com.jinglitong.wallet.ddbserver.mapper.MainChainMapper.getMainChainById">
+    </association>
+    <association property="subChain" column="coin_id"
+                 select="com.jinglitong.wallet.ddbserver.mapper.SubChainMapper.selectByCoinId">
+    </association>
+  </resultMap>
+
+  <select id="selectAllList" resultMap="rule" parameterType="com.jinglitong.wallet.api.model.view.LockConRuleVO">
+    select a.*,b.wallet_name as walletName from lock_coin_rule a left join app_wallet b on a.app_id = b.zid 
+     where 1=1
+    <if test="appId != null and appId != ''">
+    	and a.app_id=#{appId}
+    </if>
+    order by a.create_time DESC
+  </select>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select * from lock_coin_rule where  1=1
+  	<if test="chainId != null and chainId !=''">
+  		and chain_id =#{chainId}
+  	</if>
+  	<if test="coinId != null and coinId !=''">
+  		and coin_id =#{coinId}
+  	</if>
+  	<if test="appId != null and appId !=''">
+  		and app_id =#{appId}
+  	</if>
+  </select>
+</mapper>

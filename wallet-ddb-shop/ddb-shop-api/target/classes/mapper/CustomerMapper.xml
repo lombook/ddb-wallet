@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.CustomerMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Customer" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="all_phone" property="allPhone" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="BIT" />
+    <result column="invite_code" property="inviteCode" jdbcType="VARCHAR" />
+    <result column="country_id" property="countryId" jdbcType="INTEGER" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+    <result column="language" property="language" jdbcType="VARCHAR" />
+    <result column="origin" property="origin" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+    <result column="certificate_state" property="certificateState" jdbcType="BIT" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="reg_way" property="regWay" jdbcType="INTEGER" />
+    <result column="self_invite" property="selfInvite" jdbcType="VARCHAR" />
+    <result column="tree_level" property="treeLevel" jdbcType="INTEGER" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="favicon" property="favicon" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" javaType="INTEGER"/>
+  </resultMap>
+
+
+
+  <select id="getByCustId" resultMap="BaseResultMap">
+    select id,cust_id,invite_code,self_invite
+      from customer
+     where cust_id = #{custId}
+  </select>
+  <select id="selectinviteList" resultType="java.util.Map">
+    select account,date_format(created_time,'%Y-%m-%d %H:%i:%s') created_time  from customer where invite_code = (select self_invite from customer where cust_id = #{custId} )
+    order by created_time DESC
+  </select>
+
+  <select id="selectCustList" resultMap="BaseResultMap">
+    select * from customer 
+    where 1=1
+    <if test="startTime!='' and endTime != '' and startTime != null and endTime != null">
+      and created_time BETWEEN #{startTime} and #{endTime}
+    </if>
+    <if test="phone!=null and phone!=''">
+      and phone like #{phone}
+    </if>
+    <if test="remark!=null and remark!=''">
+      and remark = #{remark}
+    </if>
+    <if test="allPhone!=null and allPhone!=''">
+      and all_phone like #{allPhone}
+    </if>
+    <if test="inviteCode!=null and inviteCode!=''">
+      and self_invite = #{inviteCode}
+    </if>
+    <if test="superInviteCode!=null and superInviteCode!=''">
+      and invite_code = #{superInviteCode}
+    </if>
+    <if test="state==true">
+      and state = 1
+    </if>
+    <if test="state==false">
+      and state = 0
+    </if>
+    <if test="account!=null and account!=''">
+      and account like CONCAT(CONCAT('%',#{account},'%'))
+    </if>
+     order by created_time desc
+  </select>
+
+<select id="selectByCustIdOrInviteCode" resultMap="BaseResultMap">
+   select *  from customer
+   where 1=1
+   <if test="custId != null and custId != ''">
+     and cust_id = #{custId}
+   </if>
+  <if test="inviteCode != null and inviteCode != ''">
+    and self_invite = #{inviteCode}
+  </if>
+</select>
+  <!-- 根据用户自己的个人邀请码，查询获取邀请人列表（含自己）。level值越低用户层级越低，即根节点的level值最大，当前用户的level值为1。 -->
+  <select id="getInviteList" parameterType="com.jinglitong.springshop.entity.Customer"
+          resultType="java.util.HashMap">
+   <![CDATA[
+      SELECT
+          T1.lvl as 'level',
+          T2.id as 'id',
+          T2.cust_id as 'cust_id',
+          T2.self_invite as 'selfInvite',
+          T2.invite_code as 'inviteCode'
+      FROM
+      (
+      SELECT
+          @child AS _self_invite,
+          (  SELECT @child := invite_code  FROM customer  WHERE self_invite = _self_invite ) AS p,
+          @l := @l + 1 AS lvl
+      FROM
+         (SELECT @child := #{selfInvite}, @l := 0) vars,
+      customer h
+      WHERE
+          @child <> ''
+      ) T1,
+      customer T2
+          where T1._self_invite = T2.self_invite
+      ORDER BY T1.lvl desc
+      ]]>
+  </select>
+
+  <resultMap id="CustOrderVOMap" type="com.jinglitong.springshop.vo.response.CustomerOrderVO" >
+    <result column="zid" property="custId" jdbcType="VARCHAR" />
+    <result column="invite_code" property="inviteCode" jdbcType="VARCHAR" />
+    <result column="self_invite" property="selfInvite" jdbcType="VARCHAR" />
+    <result column="order_parent" property="orderParent" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="order_sn" property="orderSn" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectBySubOrderId" resultMap="CustOrderVOMap">
+    select c.cust_id zid,
+            c.self_invite self_invite,
+            c.invite_code invite_code,
+            o.zid order_id,
+            o.sn order_sn,
+            o.order_parent order_parent
+      from customer c left join orders o on c.cust_id = o.cust_id
+     where  o.cust_id = #{subOrderId}
+  </select>
+
+</mapper>

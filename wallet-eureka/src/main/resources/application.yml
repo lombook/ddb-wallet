@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: eureke-server
+  profiles:
+      active: dev,@pf@
+logging:
+  config: classpath:logback.xml
+
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:  #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    eviction-interval-timer-in-ms: 3000

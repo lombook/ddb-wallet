@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbkjserver.mapper.DdbRewardGfRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbRewardGfRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="frule_group" property="fruleGroup" jdbcType="VARCHAR" />
+    <result column="rule_type" property="ruleType" jdbcType="INTEGER" />
+    <result column="rule_name" property="ruleName" jdbcType="VARCHAR" />
+    <result column="reward_rate" property="rewardRate" jdbcType="INTEGER" />
+    <result column="reward_args" property="rewardArgs" jdbcType="VARCHAR" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+    <result column="expiry_time" property="expiryTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="rewardGfRuleDetail" type="com.jinglitong.wallet.ddbapi.model.DdbRewardGfRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="frule_group" property="fruleGroup" jdbcType="VARCHAR" />
+    <result column="rule_type" property="ruleType" jdbcType="INTEGER" />
+    <result column="rule_name" property="ruleName" jdbcType="VARCHAR" />
+    <result column="reward_rate" property="rewardRate" jdbcType="INTEGER" />
+    <result column="reward_args" property="rewardArgs" jdbcType="VARCHAR" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+    <result column="expiry_time" property="expiryTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <collection property="details" ofType="com.jinglitong.wallet.ddbapi.model.DdbRewardGfRuleDetail">
+      	<result column="id" property="id" jdbcType="INTEGER" />
+	    <result column="zid" property="zid" jdbcType="VARCHAR" />
+	    <result column="rule_zid" property="ruleZid" jdbcType="VARCHAR" />
+	    <result column="rule_type" property="ruleType" jdbcType="INTEGER" />
+	    <result column="shoreholder_level_define" property="shoreholderLevelDefine" jdbcType="VARCHAR" />
+	    <result column="reward_percent" property="rewardPercent" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+  
+   <select id="selectByfruleGroup" resultMap="rewardGfRuleDetail">
+    
+    	SELECT 	t.id, t.zid, t.frule_group, t.rule_type, t.rule_name, t.rule_cname, t.reward_rate, t.reward_args, t.effective_time, 
+			t.expiry_time, t.create_time, t.update_time,d.id, d.zid,d.rule_zid, d.rule_type, d.shoreholder_level_define,d.reward_percent
+		FROM  ddb_reward_gf_rule t  left join  ddb_reward_gf_rule_detail d on t.zid = d.rule_zid
+			where  t.frule_group = #{fruleGroup}  and  now() >= t.effective_time and t.expiry_time > now()
+		order by t.id  
+  </select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.server.mapper.BankDicMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.BankDic">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="sel_url" jdbcType="VARCHAR" property="selUrl" />
+    <result column="show_url" jdbcType="VARCHAR" property="showUrl" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, zid, bank_name, sel_url, show_url, create_time, update_time
+  </sql>
+</mapper>

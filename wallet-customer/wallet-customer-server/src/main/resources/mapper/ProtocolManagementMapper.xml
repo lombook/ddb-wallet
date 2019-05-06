@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.server.mapper.ProtocolManagementMapper">
+
+    <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.ProtocolManagement">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="zid" property="zid" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="body" property="body" jdbcType="LONGVARCHAR"/>
+        <result column="protocol_url" property="protocolUrl" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="protocolManagementList" resultMap="BaseResultMap">
+        select *  from app_protocol
+    </select>
+
+    <select id="getWalletProCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(aw.protocl_zid) procount from  app_protocol ap left join app_wallet aw
+  on aw.protocl_zid =  ap.zid where ap.id= #{id}
+    </select>
+    <select id="protocolManagementSelect" resultType="java.util.Map">
+        select zid,name  from  app_protocol
+    </select>
+</mapper>

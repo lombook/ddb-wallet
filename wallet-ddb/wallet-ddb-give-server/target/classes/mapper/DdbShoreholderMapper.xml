@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.give.mapper.DdbShoreholderMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbShoreholder" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="z_id" property="zId" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="level_define" property="levelDefine" jdbcType="VARCHAR" />
+    <result column="sum_amount" property="sumAmount" jdbcType="INTEGER" />
+    <result column="seed_amount" property="seedAmount" jdbcType="INTEGER" />
+    <result column="base_stone" property="baseStone" jdbcType="INTEGER" />
+    <result column="team_sum_amount" property="teamSumAmount" jdbcType="BIGINT" />
+    <result column="team_member_levels_cnt" property="teamMemberLevelsCnt" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectbyCustId" resultMap="BaseResultMap">
+    select * from ddb_shoreholder where cust_id = #{custId}
+  </select>
+</mapper>

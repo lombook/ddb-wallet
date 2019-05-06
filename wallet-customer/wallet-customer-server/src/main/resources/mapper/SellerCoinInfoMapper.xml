@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.server.mapper.SellerCoinInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.SellerCoinInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="z_id" jdbcType="VARCHAR" property="zId" />
+    <result column="coin_code" jdbcType="VARCHAR" property="coinCode" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="chain_currency" jdbcType="VARCHAR" property="chainCurrency" />
+    <result column="coin_id" jdbcType="VARCHAR" property="coinId" />
+    <result column="coin_currency" jdbcType="VARCHAR" property="coinCurrency" />
+    <result column="seller_address" jdbcType="VARCHAR" property="sellerAddress" />
+    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+
+    <select id="selectBySellerId" resultMap="BaseResultMap">
+      select a.*,b.wallet_name as walletName from seller_coin_info a left join app_wallet b on a.app_id = b.zid  where a.seller_id= #{id}
+      <if test="appId != null and appId != ''">
+      	and a.app_id =#{appId}
+      </if>
+    </select>
+</mapper>

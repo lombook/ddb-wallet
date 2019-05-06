@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbkjserver.mapper.InvestAccountMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.InvestAccount" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="invest_id" property="investId" jdbcType="VARCHAR" />
+    <result column="invest_name" property="investName" jdbcType="VARCHAR" />
+    <result column="chain_id" property="chainId" jdbcType="VARCHAR" />
+    <result column="invest_address" property="investAddress" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="currency" property="currency" jdbcType="VARCHAR" />
+    <result column="active_num" property="activeNum" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="invest_secret" property="investSecret" jdbcType="LONGVARCHAR" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="qryInvestAccounts" resultMap="BaseResultMap">
+  	select a.*,b.wallet_name as walletName from invest_account a left join app_wallet b on a.app_id = b.zid 
+  		<where>
+            <if test="investName !=null and investName != ''">
+                and a.invest_name like CONCAT('%',#{investName},'%' )
+            </if>
+            <if test="state !=null and state != ''">
+                and a.status = #{state}
+            </if>
+            <if test="currency !=null and currency != ''">
+                and a.currency = #{currency}
+            </if>
+            <if test="appId !=null and appId != ''">
+                and a.app_id = #{appId}
+            </if>
+        </where>
+        order by a.status desc,a.create_time desc
+  </select>
+</mapper>

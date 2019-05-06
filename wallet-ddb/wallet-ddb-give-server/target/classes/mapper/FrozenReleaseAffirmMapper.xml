@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.give.mapper.FrozenReleaseAffirmMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.FrozenReleaseAffirm" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="log_id" property="logId" jdbcType="VARCHAR" />
+    <result column="detail_id" property="detailId" jdbcType="VARCHAR" />
+    <result column="pay_hash" property="payHash" jdbcType="VARCHAR" />
+    <result column="wallet_id" property="walletId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectBeforTime" resultMap="BaseResultMap">
+    SELECT * FROM frozen_release_affirm where #{param1}> create_time
+  </select>
+
+  <select id="selectByWalletIdAndDetailId" resultMap="BaseResultMap">
+     select  * from frozen_release_affirm af LEFT JOIN frozen_release_logs  rl
+      on af.log_id = rl.log_id left JOIN frozen_release_detail_rule d on rl.detail_id = d.detail_id where  rl.wallet_id = #{param1} and d.rule_id = #{param2}
+  </select>
+</mapper>

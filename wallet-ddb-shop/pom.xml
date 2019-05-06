@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.3.RELEASE</version>
+        <relativePath/>
+    </parent>
+	<modelVersion>4.0.0</modelVersion>
+    <artifactId>wallet-ddb-shop</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <groupId>com.jinglitong.wallet</groupId>
+    <properties>
+        <!-- 文件拷贝时的编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 编译时的编码 -->
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <java.version>1.8</java.version>
+        <mybatis-spring-boot-starter.version>1.2.4</mybatis-spring-boot-starter.version>
+        <!--系统模块版本控制-->
+        <shop-common.version>1.0-SNAPSHOT</shop-common.version>
+        <shop-security.version>1.0-SNAPSHOT</shop-security.version>
+        <shop-business.version>1.0-SNAPSHOT</shop-business.version>
+        <shop-client.version>1.0-SNAPSHOT</shop-client.version>
+        <shop-api.version>1.0-SNAPSHOT</shop-api.version>
+        <shop-redis.version>1.0-SNAPSHOT</shop-redis.version>
+        <shop-kj.version>1.0-SNAPSHOT</shop-kj.version>
+        <shop-payback-server.version>1.0-SNAPSHOT</shop-payback-server.version>
+        <shop-tranfer.version>1.0-SNAPSHOT</shop-tranfer.version>
+        <shop-supplier.version>1.0-SNAPSHOT</shop-supplier.version>
+    </properties>
+    <modules>
+        <module>ddb-shop-api</module>
+        <module>ddb-shop-common</module>
+        <module>ddb-shop-redis</module>
+        <module>ddb-shop-security</module>
+        <module>ddb-shop-client</module>
+        <module>ddb-shop-tranfer</module>
+        <module>ddb-shop-kj</module>
+        <module>ddb-shop-payback-server</module>
+        <module>ddb-shop-supplier</module>
+        <module>ddb-shop-business</module>
+    </modules>
+
+    <dependencies>
+        <!--swagger ui-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <!-- 修改后立即生效，热部署-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>springloaded</artifactId>
+            <version>1.2.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+        <!--lombok插件生成get/set方法-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.4</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <profileActive>dev</profileActive>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profileActive>test</profileActive>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profileActive>prod</profileActive>
+            </properties>
+        </profile>
+    </profiles>
+</project>

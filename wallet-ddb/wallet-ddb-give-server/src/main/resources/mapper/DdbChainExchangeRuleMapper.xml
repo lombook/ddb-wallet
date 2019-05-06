@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.server.mapper.DdbChainExchangeRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbChainExchangeRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="rule_name" property="ruleName" jdbcType="VARCHAR" />
+    <result column="percent" property="percent" jdbcType="DECIMAL" />
+    <result column="min_amount" property="minAmount" jdbcType="INTEGER" />
+    <result column="integ_cname" property="integCname" jdbcType="VARCHAR" />
+    <result column="integ_name" property="integName" jdbcType="VARCHAR" />
+    <result column="resave_integ_real_cname" property="resaveIntegRealCname" jdbcType="VARCHAR" />
+    <result column="resave_integ_real_name" property="resaveIntegRealName" jdbcType="VARCHAR" />
+    <result column="exchange_chain_id" property="exchangeChainId" jdbcType="VARCHAR" />
+    <result column="exchange_coin_id" property="exchangeCoinId" jdbcType="VARCHAR" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+    <result column="expiry_time" property="expiryTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.server.mapper.CustomerOperationMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.CustomerOperation">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="operation_id" jdbcType="VARCHAR" property="operationId" />
+    <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="send_address" jdbcType="VARCHAR" property="sendAddress" />
+    <result column="rev_address" jdbcType="VARCHAR" property="revAddress" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="amount" jdbcType="VARCHAR" property="amount" />
+    <result column="tx" jdbcType="VARCHAR" property="tx" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>

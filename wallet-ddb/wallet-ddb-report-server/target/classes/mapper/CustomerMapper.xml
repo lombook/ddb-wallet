@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.reportserver.mapper.CustomerMapper">
+    <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.Customer">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="cust_id" jdbcType="VARCHAR" property="custId"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="all_phone" jdbcType="VARCHAR" property="allPhone"/>
+        <result column="state" jdbcType="BIT" property="state"/>
+        <result column="invite_code" jdbcType="VARCHAR" property="inviteCode"/>
+        <result column="country_id" jdbcType="INTEGER" property="countryId"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+        <result column="language" jdbcType="VARCHAR" property="language"/>
+        <result column="origin" jdbcType="INTEGER" property="origin"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="certificate_state" property="certificateState"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="reg_way" jdbcType="INTEGER" property="regWay"/>
+        <result column="self_invite" jdbcType="VARCHAR" property="selfInvite"/>
+        <result column="tree_level" jdbcType="INTEGER" property="treeLevel"/>
+        <result column="app_id" property="appId" jdbcType="BIGINT" />
+    </resultMap>
+    <select id="selectByAccountInviteCodeAndNumber" parameterType="java.util.Map" resultType="java.util.Map">
+        select t.account,up.account upaccount,t.self_invite invite_code,info.identity_type,info.identity_no,ifnull(info.auditstate,0) auditstate,t.created_time,info.updated_time
+        from customer t
+        left join customer up on t.invite_code=up.self_invite
+        left join identity_info info on t.cust_id=info.cust_id
+
+
+        <where>
+            <if test="account!=null and account!=''">
+            t.account = #{account}
+            </if>
+            <if test="inviteCode!=null and inviteCode!=''">
+              and  t.self_invite = #{inviteCode}
+            </if>
+            <if test="appId!=null and appId!=''">
+                and t.app_id = #{appId}
+            </if>
+            <if test="identityNo!=null and identityNo!=''">
+                and info.identity_no = #{identityNo}
+            </if>
+        </where>
+        order by t.created_time desc
+    </select>
+
+
+    <select id="selectOrderAccount" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        o.shop_trade,
+        o.rule_id,
+        c.account,
+        o.price,
+        o.product_num,
+        o.create_time,
+        o.order_create_time,
+        CASE r.integ_name
+        WHEN 'shubei_all' THEN
+        r.amount
+        ELSE
+        0
+        END AS 'shubei',
+        CASE r.integ_name
+        WHEN 'miaobei_all' THEN
+        r.amount
+        ELSE
+        0
+        END AS 'miaobei'
+
+        FROM
+        customer c,
+        ddb_order o,
+        ddb_cust_integral_record r
+        WHERE
+        c.cust_id = o.user_id
+        AND o.flow_id = r.flow_id  and (real_name = 'sb_dingdan' or real_name = 'mb_dingdan'  )
+
+        <if test="shopTrade!=null and shopTrade!=''">
+                and o.shop_trade = #{shopTrade}
+            </if>
+            <if test="startTime!=null and startTime!=''">
+                and  o.create_time between  #{startTime} and #{endTime}
+            </if>
+            <if test="account!=null and account!=''">
+                and c.account = #{account}
+            </if>
+        <if test="ruleId!=null and ruleId!=''">
+            and o.rule_id = #{ruleId}
+        </if>
+
+        ORDER BY
+        o.create_time DESC
+    </select>
+    
+    
+    <select id="selectteamActualDividends" parameterType="java.util.Map" resultType="java.util.Map">
+    select
+    	o.shop_trade,t.account,o.create_time,r.real_cname,g.account as reward_account,r.amount,r.integ_cname 
+    from customer t ,ddb_cust_integral_record r,ddb_order o,customer g 
+    where o.user_id=t.cust_id and o.flow_id=r.flow_id
+    		<if test="account!=null and account!=''">
+                and t.account=#{account} 
+            </if>
+            <if test="shop_trade!=null and shop_trade!=''">
+                and o.shop_trade=#{shop_trade} 
+            </if>
+    	and g.cust_id=r.cust_id 
+    	and (r.real_name = 'xb_xiaoshou' or r.real_name = 'xb_tongxing' or r.real_name = 'xb_tuozhan'
+    	 or r.real_name = 'wb_xiaoshou' or r.real_name = 'wb_tongxing' or r.real_name = 'wb_tuozhan' 
+    	  or r.real_name = 'jb_xiaoshou' or r.real_name = 'jb_tongxing' or r.real_name = 'jb_tuozhan')
+     order by o.create_time DESC,g.account DESC,r.real_name DESC
+    </select>
+    
+    <select id="selectCustIdbyOrder" resultType="String">
+    	select user_id from ddb_order where shop_trade = #{shopTrade}
+    </select>
+    
+    <select id="selectTestCusts" resultType="String">
+    	select cust_id from ddb_test_cust_dic 
+    </select>
+    
+    <select id="selectRelationshipTree" parameterType="java.util.Map" resultType="java.util.Map">
+    select
+    	t.account,t.tree_level,d.level_define,d.base_stone,d.sum_amount,d.team_sum_amount 
+    from customer t ,ddb_shoreholder d  
+    where t.cust_id=d.cust_id  
+    	<if test="account!=null and account!=''">
+                and t.account=#{account}  
+            </if>  	
+    order by t.tree_level DESC
+    </select>
+    
+    <select id="selectChildren"  resultType="java.util.Map">
+   select
+    	c1.account id,c2.account pId,i.cust_name as custName
+    from customer c2 ,customer c1 LEFT JOIN identity_info i on  (i.cust_id = c1.cust_id   and i.app_id = c1.app_id and c1.app_id=#{appId})
+    where c1.invite_code=c2.self_invite and c2.account = #{account} and c1.app_id=#{appId} and c2.app_id=#{appId}
+    order by c1.account 
+    </select>
+    
+    <select id="selectselfChildren"  resultType="java.util.Map">
+    select
+    	t.account,t.tree_level,d.level_define,d.base_stone,d.sum_amount,d.team_sum_amount,i.cust_name 
+    from customer t1 ,ddb_shoreholder d,  customer t LEFT JOIN identity_info i on  (i.cust_id = t.cust_id   and i.app_id = t.app_id and t.app_id=#{appId})
+    where t.cust_id=d.cust_id
+    	 and ((t.invite_code = t1.self_invite and t1.account = #{account}) or (t.account = #{account} and t1.account = #{account}))
+    	 and t.app_id=#{appId} and t1.app_id=#{appId}  	
+    order by t.tree_level,t.account 
+    </select>    
+    
+    
+    <select id="selectCustNamebyAccount" resultType="String">
+    SELECT cust_name from identity_info i, customer c where c.app_id = i.app_id and c.app_id =#{appId} and c.cust_id = i.cust_id and c.account = #{account}
+    </select>
+    
+    
+    
+    <select id="selectOrders" resultType="java.util.Map">
+    
+    SELECT 
+    	o.shop_trade,o.rule_id,o.create_time,o.order_create_time,o.product_num,o.price, c.account,c.cust_id 
+    from ddb_order o,customer c 
+    where o.user_id = c.cust_id and c.app_id = #{appId} 
+    <if test="shopTrade!=null and shopTrade!=''">
+    	and o.shop_trade = #{shopTrade}
+    </if>
+    <if test="startTime!=null and startTime!=''">
+	    and  o.create_time between  #{startTime} and #{endTime}
+	</if>
+	<if test="account!=null and account!=''">
+	    and c.account = #{account}
+	</if>
+	<if test="ruleId!=null and ruleId!=''">
+        and o.rule_id = #{ruleId}
+    </if>
+        
+    ORDER BY o.order_create_time DESC
+
+    </select>
+    <select id="selectByCustId" resultMap="BaseResultMap">
+        select * from customer where cust_id = #{custId}
+    </select>
+    <select id="selectByTreeLevelAndinvitecode" resultMap="BaseResultMap">
+        select * from customer where tree_level = #{treeLevel} and self_invite = #{inviteCode} and app_id = #{appId}
+    </select>
+    
+
+</mapper>

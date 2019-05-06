@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.server.mapper.MainChainMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.MainChain">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="chain_name" jdbcType="VARCHAR" property="chainName" />
+    <result column="chain_currency" jdbcType="VARCHAR" property="chainCurrency" />
+    <result column="chain_interface" jdbcType="VARCHAR" property="chainInterface" />
+    <result column="chain_currency_img" jdbcType="VARCHAR" property="chainCurrencyImg" />
+    <result column="chain_desc" jdbcType="VARCHAR" property="chainDesc" />
+    <result column="handle_name" jdbcType="VARCHAR" property="handleName" />
+    <result column="state" jdbcType="BIT" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="active_flag" jdbcType="BIT" property="activeFlag" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+<select id="checksMainChain" resultType="java.lang.Integer" parameterType="com.jinglitong.wallet.api.model.view.MainChainVO">
+select count(*) from main_chain where app_id=#{appId} and chain_name=#{chainName}
+</select>
+
+  <select id="getMainChains" resultType="java.util.Map" parameterType="com.jinglitong.wallet.api.model.view.MainChainVO">
+    select mc.id,mc.active_flag,mc.app_id, mc.chain_currency, mc.chain_currency_img,mc.chain_desc, mc.chain_id,
+    mc.chain_interface, mc.chain_name,mc.create_time,mc.handle_name,mc.state,mc.update_time,aw.wallet_name
+    from main_chain mc left join app_wallet aw on mc.app_id=aw.zid
+    <where>
+      <if test="appId!=null and appId!=''">
+        mc.app_id = #{appId}
+      </if>
+    </where>
+    order by state DESC, create_time DESC
+  </select>
+  <select id="getMainChainById" resultMap="BaseResultMap">
+   select * from main_chain where chain_id = #{chainId} 
+  </select>
+  <select id="selectCounts" resultType="Integer">
+    select count(*) from main_chain
+    <where>
+      state = 1
+      <if test="appId!=null and appId!=''">
+        and app_id = #{appId}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectAllMainChain"  resultMap="BaseResultMap">
+    select * from main_chain
+    <where>
+      <if test="appId!=null and appId!=''">
+        and app_id = #{appId}
+      </if>
+    </where>
+  </select>
+  
+  <update id="updateByChainId" parameterType="com.jinglitong.wallet.api.model.view.MainChainVO">
+  		update main_chain set active_flag=#{activeFlag} where 
+  		<if test="chainId != null and chainId != ''">
+  			chain_id=#{chainId}
+  		</if>
+  		
+  </update>
+
+  <select id="selectByChainId" resultMap="BaseResultMap">
+    select * from main_chain where chain_id=#{chainId}
+  </select>
+</mapper>

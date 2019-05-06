@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.AreaMapper">
+	<!-- <cache type="com.jingtum.wallter.common.redis.MybatisRedisCache" /> -->
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.Area">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="area_id" jdbcType="VARCHAR" property="areaId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="area_spec_id" jdbcType="VARCHAR" property="areaSpecId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="sort_position" jdbcType="VARCHAR" property="sortPosition" />
+    <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+
+  <select id="getprovinces" resultMap="BaseResultMap">
+    select * from area_dic
+    where area_spec_id=200000
+    
+  </select>
+  
+  <select id="getcities" resultMap="BaseResultMap">
+    select * from area_dic
+    where parent_id=#{provinceId}
+    
+  </select>
+</mapper>

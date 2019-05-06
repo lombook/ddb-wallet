@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.WalletMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.Wallet">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="wallet_id" jdbcType="VARCHAR" property="walletId" />
+    <result column="wallet_name" jdbcType="VARCHAR" property="walletName" />
+    <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+    <result column="public_key" jdbcType="VARCHAR" property="publicKey" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="prompt" jdbcType="VARCHAR" property="prompt" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="pay_passwd" jdbcType="LONGVARCHAR" property="payPasswd" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="userwallets" resultType="map" parameterType="string">
+    SELECT w.wallet_id ,
+     w.wallet_name ,
+     c.chain_id,
+     c.chain_name ,
+     c.chain_currency_img ,
+     w.public_key ,
+     w.prompt,
+     w.created_time,
+      aw.wallet_name walletName,
+     c.chain_desc,
+     c.handle_name
+      FROM wallet w LEFT JOIN main_chain c ON w.chain_id = c.chain_id
+      left join app_wallet aw on aw.zid = w.app_id
+    WHERE w.cust_id = #{custId} and w.app_id = c.app_id and c.app_id= aw.zid
+      <if test="appId!=null and appId!=''">
+        and w.app_id = #{appId}
+    </if>
+  </select>
+  <select id="getCusPrListByCusID" resultMap="BaseResultMap" parameterType="string">
+    SELECT `wallet_id`, `wallet_name`, `cust_id`, `public_key`, `pay_passwd`, `chain_id`, `prompt`, `created_time`, `updated_time`  FROM wallet
+    WHERE cust_id = #{custId}
+  </select>
+  
+  <insert id="insertHistory">
+  	insert into wallet_bak (`id`, `wallet_id`, `wallet_name`, `cust_id`, `public_key`, `pay_passwd`, `chain_id`, `prompt`, `created_time`, `updated_time`, `delete_time`, `app_id`)
+      values(#{id},#{walletId},#{walletName},#{custId},#{publicKey},#{payPasswd},#{chainId},#{prompt},#{createdTime},#{updatedTime},CURRENT_TIMESTAMP,#{appId})
+  </insert>
+  <delete id="deleteWalletCoin">
+  	delete from wallet_coin where wallet_id=#{walletId}
+  </delete>
+    <select id="selectById" resultMap="BaseResultMap">
+        select * from wallet where wallet_id = #{id}
+    </select>
+    <resultMap id="selectMap" type="HashMap">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="chain_id" jdbcType="VARCHAR" property="chain_id" />
+        <result column="COUNT" property="COUNT" jdbcType="INTEGER" />
+    </resultMap>
+    <select id="selectChain" resultMap="selectMap">
+        SELECT m.chain_name  chain_id,COUNT(w.cust_id) AS COUNT
+        FROM main_chain m LEFT JOIN wallet w  on w.chain_id = m.chain_id
+        where state = 1
+        <if test="appId!=null and appId!=''">
+            and w.app_id = #{appId}
+        </if>
+         GROUP BY m.chain_id
+    </select>
+
+
+    <select id="selectByWalletId" resultMap="BaseResultMap">
+        select * from wallet where wallet_id = #{walletId}
+    </select>
+
+    <select id="selectByCustIdAndAppIdAndChainId" resultMap="BaseResultMap">
+        select * from wallet where cust_id = #{custId} and app_id = #{appId} and chain_id = #{chainId}
+    </select>
+</mapper>

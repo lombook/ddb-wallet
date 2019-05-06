@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.give.mapper.FrozenReleaseLogFailMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.FrozenReleaseLogFail" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="log_id" property="logId" jdbcType="VARCHAR" />
+    <result column="detail_id" property="detailId" jdbcType="VARCHAR" />
+    <result column="ledger_adress" property="ledgerAdress" jdbcType="VARCHAR" />
+    <result column="target_address" property="targetAddress" jdbcType="VARCHAR" />
+    <result column="send_amount" property="sendAmount" jdbcType="VARCHAR" />
+    <result column="fail_state" property="failState" jdbcType="INTEGER" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectBycreateTime" resultMap="BaseResultMap">
+    select  * from frozen_release_log_fail
+  </select>
+
+  <select id="selectByWalletIdAndRuleId" resultMap="BaseResultMap">
+
+SELECT * FROM frozen_release_log_fail l LEFT JOIN frozen_release_detail_rule d ON  l.`detail_id` = d.`detail_id` LEFT JOIN frozen_release_logs  fl
+ on fl.log_id = l.log_id   WHERE fl.`wallet_id` = #{param1} AND d.`rule_id` = #{param2}
+  </select>
+
+  <select id="selectbetween" resultMap="BaseResultMap">
+    SELECT * FROM frozen_release_log_fail  where  create_time BETWEEN #{param1} and #{param2}
+  </select>
+
+  <select id="selectBycount" resultMap="BaseResultMap">
+    select * from frozen_release_log_fail where count != 3
+  </select>
+
+</mapper>

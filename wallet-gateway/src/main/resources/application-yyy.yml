@@ -1,0 +1,7 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.199.51:10000/eureka/
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true

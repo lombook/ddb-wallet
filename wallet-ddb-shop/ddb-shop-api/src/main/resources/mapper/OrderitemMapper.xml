@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.OrderitemMapper">
+    <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Orderitem">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="zid" property="zid" jdbcType="VARCHAR"/>
+        <result column="isDelivery" property="isdelivery" jdbcType="BIT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="shippedQuantity" property="shippedquantity" jdbcType="INTEGER"/>
+        <result column="sn" property="sn" jdbcType="VARCHAR"/>
+        <result column="thumbnail" property="thumbnail" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="weight" property="weight" jdbcType="INTEGER"/>
+        <result column="orders_id" property="ordersId" jdbcType="VARCHAR"/>
+        <result column="sku_id" property="skuId" jdbcType="VARCHAR"/>
+        <result column="currency_id" property="currencyId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="integral_c_id" property="integralCId" jdbcType="VARCHAR"/>
+        <result column="price_code" property="priceCode" jdbcType="VARCHAR"/>
+        <result column="integral_code" property="integralCode" jdbcType="VARCHAR"/>
+        <result column="integral_price" property="integralPrice" jdbcType="DECIMAL"/>
+        <result column="s_value" property="sValue" jdbcType="DECIMAL" />
+    	<result column="djb_value" property="djbValue" jdbcType="DECIMAL" />
+        <result column="specifications" property="specifications" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <resultMap id="OrderIteamList" type="com.jinglitong.springshop.vo.request.OrderIteamVO">
+        <result column="zid" property="zid" jdbcType="VARCHAR"/>
+        <result column="thumbnail" property="thumbnail" jdbcType="VARCHAR"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="skuId" property="skuId" jdbcType="VARCHAR"/>
+        <result column="priceId" property="priceId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectByOrdersId" resultMap="OrderIteamList">
+    SELECT
+	oi.zid,
+	oi.thumbnail,
+	oi.quantity,
+	oi.sku_id as skuId,
+	sp.zid as priceId
+FROM
+	orderitem oi
+LEFT JOIN sku_price sp ON sp.sku_id = oi.sku_id
+AND sp.price_code = oi.price_code
+AND sp.integral_code = oi.integral_code
+  where oi.orders_id = #{pzid}
+  </select>
+
+    <resultMap id="sorderResult" type="com.jinglitong.springshop.vo.response.OrderResponseVo">
+        <result column="pzid" property="pzid" jdbcType="VARCHAR"/>
+        <result column="psn" property="psn" jdbcType="VARCHAR"/>
+        <result column="amount" property="amount" jdbcType="VARCHAR"/>
+        <result column="amount" property="amount" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="VARCHAR" />
+        <result column="consignee" property="consignee" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="paymentPluginName" property="paymentPluginName" jdbcType="VARCHAR"/>
+        <result column="areaName" property="areaName" jdbcType="VARCHAR"/>
+        <result column="currencySign" property="currency" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="create_time" jdbcType="TIMESTAMP"/>
+        <result column="integral_c_id" property="integralCId" jdbcType="VARCHAR"/>
+        <result column="price_code" property="priceCode" jdbcType="VARCHAR"/>
+        <result column="integral_code" property="integralCode" jdbcType="VARCHAR"/>
+        <result column="integral_price" property="integralPrice" jdbcType="DECIMAL"/>
+        <collection property="sorderVoList" ofType="com.jinglitong.springshop.vo.response.SorderVo">
+            <result column="ssn" property="ssn" jdbcType="VARCHAR"/>
+            <result column="cPrice" property="cPrice" jdbcType="VARCHAR"/>
+            <result column="odStatus" property="status" jdbcType="INTEGER"/>
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+            <result column="thumbnail" property="thumbnail" jdbcType="VARCHAR"/>
+            <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+            <result column="sku_id" property="skuId" jdbcType="VARCHAR"/>
+            <result column="deliveryCorp" property="deliveryCorp" jdbcType="VARCHAR"/>
+            <result column="trackingNo" property="trackingNo" jdbcType="VARCHAR"/>
+            <result column="subAmount" property="subAmount" jdbcType="VARCHAR"/>
+            <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
+            <result column="integralCode" property="integralCode" jdbcType="VARCHAR"/>
+            <result column="priceCode" property="priceCode" jdbcType="VARCHAR"/>
+            <result column="integralPrice" property="integralPrice" jdbcType="VARCHAR"/>
+            <result column="cIntegralPrice" property="cIntegralPrice" jdbcType="VARCHAR"/>
+            <result column="cIntegralCode" property="cIntegralCode" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectbyOrderDetail" resultMap="sorderResult">
+    select os.zid pzid,os.status,cy.currencySign ,os.amount,os.price,os.sn psn,os.consignee,os.phone,os.areaName,os.address,date_format(os.create_time,'%Y-%m-%d %H:%i:%s') create_time,
+    od.sn ssn,od.price as cPrice,od.`status` odStatus,od.amount subAmount,cs.`name`,cs.thumbnail,cs.sku_id,cs.quantity,
+    pn.paymentPluginName,od.integral_code AS integralCode,od.integral_price AS integralPrice,od.price_code AS priceCode
+     from orders os
+     LEFT JOIN paymenttransaction pn
+    on os.zid = pn.order_id
+     LEFT JOIN currency cy
+    on os.currency_id = cy.zid
+    LEFT JOIN orders od
+    on os.zid = od.order_parent
+    LEFT JOIN orderitem cs
+    on od.zid = cs.orders_id
+    where os.zid = #{pzid} and od.order_parent != 'P'
+
+  </select>
+
+    <select id="selectbyOrderDetailManage" resultMap="sorderResult">
+    select os.zid pzid,os.status,cy.currencySign ,os.amount,os.sn psn,os.consignee,
+    os.phone,os.areaName,os.address,date_format(os.create_time,'%Y-%m-%d %H:%i:%s') create_time,
+    os.integral_code,os.integral_price,os.price,
+    od.sn ssn,od.price,od.`status` odStatus,od.amount subAmount,od.integral_code cIntegralCode,
+    od.integral_price* cs.quantity as cIntegralPrice, od.price*cs.quantity as cPrice, cs.`name`,cs.thumbnail,cs.sku_id,
+    cs.quantity,pn.paymentPluginName,op.deliveryCorp,op.trackingNo,op.created_time
+    from orders os
+     LEFT JOIN paymenttransaction pn
+    on os.zid = pn.order_id
+     LEFT JOIN currency cy
+    on os.currency_id = cy.zid
+    LEFT JOIN orders od
+    on os.zid = od.order_parent
+    LEFT JOIN orderitem cs
+    on od.zid = cs.orders_id
+    LEFT JOIN ordershipping op
+    on op.order_id = cs.orders_id
+    where os.zid = #{pzid} and od.order_parent != 'P'
+
+  </select>
+
+    <select id="getOrderRealPay" resultType="map">
+   SELECT
+        p.currency_code as currencyCode,
+        p.amount as amount,
+        c.currencyName as currencyName,
+        c.currencySign as currencySign
+    FROM
+	  order_real_pay p LEFT JOIN currency c on p.currency_id = c.id
+    WHERE
+	  order_id = #{orderId}
+  </select>
+</mapper>

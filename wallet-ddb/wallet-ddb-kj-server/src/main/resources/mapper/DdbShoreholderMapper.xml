@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbkjserver.mapper.DdbShoreholderMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbShoreholder" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="z_id" property="zId" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="level_define" property="levelDefine" jdbcType="VARCHAR" />
+    <result column="sum_amount" property="sumAmount" jdbcType="INTEGER" />
+    <result column="seed_amount" property="seedAmount" jdbcType="INTEGER" />
+    <result column="base_stone" property="baseStone" jdbcType="INTEGER" />
+    <result column="team_sum_amount" property="teamSumAmount" jdbcType="BIGINT" />
+    <result column="team_member_levels_cnt" property="teamMemberLevelsCnt" jdbcType="VARCHAR" />
+    <result column="cteate_time" property="cteateTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="own_special_num" property="ownSpecialNum" jdbcType="INTEGER" />
+    <result column="dsub_special_num" property="dsubSpecialNum" jdbcType="INTEGER" />
+  </resultMap>
+
+  <select id="selectbyCustId" resultMap="BaseResultMap">
+    select * from ddb_shoreholder where cust_id = #{custId}
+  </select>
+  <update id="updateShoreholder" parameterType="java.util.Map" >
+  	UPDATE ddb_shoreholder
+  	<set>
+    	<if test="level_define != null and level_define != ''">
+    		level_define=#{level_define},
+    	</if>
+    	<if test="sum_amount != null">
+    		sum_amount=#{sum_amount},
+    	</if>
+    	<if test="seedseed_amountnull">
+    		seed_amount=#{seed_amount},
+    	</if>
+    	<if test="base_stone != null">
+    		base_stone=#{base_stone},
+    	</if>
+    	<if test="team_sum_amount != null">
+    		team_sum_amount=#{team_sum_amount},
+    	</if>
+    	<if test="team_member_levels_cnt != null and team_member_levels_cnt != ''">
+    		team_member_levels_cnt=#{team_member_levels_cnt},
+    	</if>
+    	<if test="create_time != null">
+    		create_time=#{create_time},
+    	</if>
+    	<if test="update_time != null">
+    		update_time=#{update_time},
+    	</if>
+		<if test="own_special_num != null">
+			own_special_num=#{own_special_num},
+		</if>
+		<if test="dsub_special_num != null">
+			dsub_special_num=#{dsub_special_num}
+		</if>
+    </set>
+    WHERE
+    	cust_id=#{cust_id}
+  </update>
+</mapper>

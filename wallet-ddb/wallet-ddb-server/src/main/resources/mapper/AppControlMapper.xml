@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.AppControlMapper">
+    <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.AppControl">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="z_id" jdbcType="VARCHAR" property="zId"/>
+        <result column="app_type" jdbcType="VARCHAR" property="appType"/>
+        <result column="app_name" jdbcType="VARCHAR" property="appName"/>
+        <result column="app_version" jdbcType="VARCHAR" property="appVersion"/>
+        <result column="app_url" jdbcType="VARCHAR" property="appUrl"/>
+        <result column="app_fource" jdbcType="BIT" property="appFource"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="app_version_code" jdbcType="INTEGER" property="appVersionCode"/>
+        <result column="app_remark" jdbcType="LONGVARCHAR" property="appRemark"/>
+        <result column="app_id" jdbcType="VARCHAR" property="appId"/>
+    </resultMap>
+    <resultMap id="voMap" type="com.jinglitong.wallet.api.model.view.AppConSelVO">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="zid" jdbcType="VARCHAR" property="zId"/>
+        <result column="app_type" jdbcType="VARCHAR" property="appType"/>
+        <result column="app_name" jdbcType="VARCHAR" property="appName"/>
+        <result column="app_version" jdbcType="VARCHAR" property="appVersion"/>
+        <result column="app_url" jdbcType="VARCHAR" property="appUrl"/>
+        <result column="app_fource" jdbcType="BIT" property="appFource"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="app_version_code" jdbcType="INTEGER" property="appVersionCode"/>
+        <result column="app_remark" jdbcType="LONGVARCHAR" property="appRemark"/>
+        <result column="app_id" jdbcType="VARCHAR" property="appId"/>
+        <result column="wallet_name" jdbcType="VARCHAR" property="walletName"/>
+
+    </resultMap>
+    <select id="getAppControls" resultMap="voMap">
+        select ac.*, aw.wallet_name  from app_control ac left join app_wallet aw on ac.app_id = aw.zid
+        <where>
+            <if test="appType !=null and appType != ''">
+                and ac.app_type like CONCAT('%',#{appType},'%' )
+            </if>
+            <if test="appVersion !=null and appVersion != ''">
+                and ac.app_version like CONCAT('%',#{appVersion},'%' )
+            </if>
+            <if test="appId!=null and appId!=''">
+                and ac.app_id = #{appId}
+            </if>
+        </where>
+        order by created_time DESC
+    </select>
+</mapper>

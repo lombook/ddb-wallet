@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.CompanyInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.CompanyInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="state" jdbcType="BIT" property="state" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="legal_name" jdbcType="VARCHAR" property="legalName" />
+    <result column="credit_code" jdbcType="VARCHAR" property="creditCode" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="created_user" jdbcType="VARCHAR" property="createdUser" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="updated_user" jdbcType="VARCHAR" property="updatedUser" />
+  </resultMap>
+
+</mapper>

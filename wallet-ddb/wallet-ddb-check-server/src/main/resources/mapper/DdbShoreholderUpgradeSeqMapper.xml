@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.checkserver.mapper.DdbShoreholderUpgradeSeqMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbShoreholderUpgradeSeq" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="new_level_define" property="newLevelDefine" jdbcType="VARCHAR" />
+    <result column="upgrade_rule_zid" property="upgradeRuleZid" jdbcType="VARCHAR" />
+    <result column="upgrade_time" property="upgradeTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <insert id="saveDdbShoreholderUpgradeSeq" parameterType="com.jinglitong.wallet.ddbapi.model.DdbShoreholderUpgradeSeq">
+ 	INSERT INTO ddb_shoreholder_upgrade_seq
+ 	 	(
+ 			cust_id,
+ 			order_id,
+ 			new_level_define,
+ 			upgrade_rule_zid,
+ 			upgrade_time,
+ 			create_time
+ 		)
+ 		VALUES
+ 		(
+			#{custId},
+			#{orderId},
+			#{newLevelDefine},
+			#{upgradeRuleZid},
+			#{upgradeTime},
+			#{createTime}
+ 		)
+  </insert>
+</mapper>

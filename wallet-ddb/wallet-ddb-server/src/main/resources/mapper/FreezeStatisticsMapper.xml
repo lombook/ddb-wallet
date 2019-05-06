@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.FreezeStatisticsMapper">
+	<resultMap type="com.jinglitong.wallet.api.model.FreezeUserInfo" id="freezeUserInfoList">
+		<result column="account" property="account"/>
+		<result column="address" property="publicKey"/>
+		<result column="chain_name" property="chainName"/>
+		<result column="coin_name" property="coinName"/>
+		<result column="total_amount" property="totalAmount"/>
+		<result column="freeze_amount" property="freezeAmount"/>
+		<result column="create_time" property="createTime"/>
+		<result column="source_status" property="status"/>
+		<result column="rule_name" property="ruleName"/>
+		<result column="wallet_name" property="walletName"/>
+	</resultMap>
+	<select id="getFreezeData" resultMap="freezeUserInfoList" parameterType="com.jinglitong.wallet.api.model.view.FreezeDataVO">
+	select a.account, a.address,b.chain_name,c.coin_name, a.source_status,a.create_time,a.amount total_amount, 
+	d.amount freeze_amount,e.rule_name,f.wallet_name  from frozen_release_excel_source a left join main_chain b on a.chain_id=b.chain_id 
+	left join sub_chain c on a.coin_id=c.coin_id ,frozen_release_excel_source_amount d,frozen_release_rule e,app_wallet f
+	where a.source_id=d.source_id and a.rule_id=e.rule_id  and f.zid=a.app_id
+
+		<if test="appId !='' and appId != null ">
+         and a.app_id=#{appId}
+        </if>
+		<if test="beginTime !=''  and beginTime != null ">
+		 and date(a.create_time) &gt;= #{beginTime}
+		<!-- and  date(a.create_time)  <= #{endTime}  and date(a.create_time) >= #{beginTime} -->
+         <!--  AND  a.create_time BETWEEN #{begintTime} and #{endTime} -->
+        </if>
+        
+        <if test=" endTime != '' and endTime != null">
+		and  date(a.create_time)  &lt;= #{endTime}  
+		<!-- and  date(a.create_time)  <= #{endTime}  and date(a.create_time) >= #{beginTime} -->
+         <!--  AND  a.create_time BETWEEN #{begintTime} and #{endTime} -->
+        </if>
+        <if test="account !='' and account != null ">
+         AND   a.account like concat('%',#{account},'%')
+        </if>
+        <if test="status !='' and status != null ">
+          AND  a.source_status=#{status}
+        </if>
+	</select>
+	<select id="getTotalCount" resultType="java.lang.Integer">
+		select count(*) from frozen_release_excel_source a 
+		<if test="_parameter !='' and _parameter != null ">
+         where a.app_id=#{_parameter}
+        </if>
+	</select>
+	
+	<resultMap type="java.util.HashMap" id="coinAndAmountMap">
+	<result column="coin_name" property="coinName"/>
+	<result column="amount" property="amount"/>
+	</resultMap>
+	<select id="getTotalAmount" resultMap="coinAndAmountMap">
+		select b.coin_name ,sum(a.amount) amount  from frozen_release_excel_source a left join sub_chain b on a.coin_id=b.coin_id 
+		<if test="_parameter !='' and _parameter != null ">
+         where a.app_id=#{_parameter}
+        </if>
+		
+		group by b.coin_name
+	</select>
+	
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.DdbIntegralWalletMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.DdbIntegralWallet" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="inte_name" property="inteName" jdbcType="VARCHAR" />
+    <result column="inte_cname" property="inteCname" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <select id="selectByRealNameAdnCustId" resultMap="BaseResultMap">
+    select * from ddb_integral_wallet
+    where 1=1
+    <if test="custId != null and custId != ''">
+      and cust_id = #{custId}
+    </if>
+    <if test="integName != null and integName != ''">
+      and inte_name = #{integName}
+    </if>
+  </select>
+
+
+  <update id="updateByPay" parameterType="com.jinglitong.springshop.entity.DdbIntegralWallet" >
+    update ddb_integral_wallet
+       set amount = amount - #{amount}
+     where  cust_id= #{custId}
+       and  inte_name = #{inteName}
+       and  amount >= #{amount}
+  </update>
+  
+</mapper>

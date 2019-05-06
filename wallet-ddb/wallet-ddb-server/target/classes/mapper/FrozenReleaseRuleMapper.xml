@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.FrozenReleaseRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.FrozenReleaseRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rule_id" property="ruleId" jdbcType="VARCHAR" />
+    <result column="fr_type" property="frType" jdbcType="INTEGER" />
+    <result column="chian_id" property="chianId" jdbcType="VARCHAR" />
+    <result column="coin_id" property="coinId" jdbcType="VARCHAR" />
+    <result column="public_key" property="publicKey" jdbcType="VARCHAR" />
+    <result column="fr_status" property="frStatus" jdbcType="INTEGER" />
+    <result column="mom" property="mom" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="pay_passwd" property="payPasswd" jdbcType="LONGVARCHAR" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="ruleDetail" type="com.jinglitong.wallet.api.model.FrozenReleaseRule" >
+	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rule_id" property="ruleId" jdbcType="VARCHAR" />
+    <result column="fr_type" property="frType" jdbcType="INTEGER" />
+    <result column="chian_id" property="chianId" jdbcType="VARCHAR" />
+    <result column="coin_id" property="coinId" jdbcType="VARCHAR" />
+    <result column="public_key" property="publicKey" jdbcType="VARCHAR" />
+    <result column="fr_status" property="frStatus" jdbcType="INTEGER" />
+    <result column="mom" property="mom" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="pay_passwd" property="payPasswd" jdbcType="LONGVARCHAR" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="rule_name" property="ruleName" jdbcType="VARCHAR" />
+    <result column="walletName" property="walletName" jdbcType="VARCHAR" />
+    <collection property="details" ofType="com.jinglitong.wallet.api.model.FrozenReleaseDetailRule">
+      <result column="detail_id" property="detailId" jdbcType="VARCHAR" />
+      <result column="rule_id" property="ruleId" jdbcType="VARCHAR" />
+      <result column="proportion" property="proportion" jdbcType="INTEGER" />
+      <result column="execut_time" property="executTime" jdbcType="TIMESTAMP" />
+      <result column="left_proportion" property="leftProportion" jdbcType="INTEGER" />
+      <result column="detail_status" property="detailStatus" jdbcType="INTEGER" />
+      <result column="avg_days" property="avgDays" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+
+  <select id="getFRList" resultType="map" parameterType="com.jinglitong.wallet.api.model.logic.ReleaseCurrencyVo">
+      select t.rule_id,t.create_time,t.fr_type,t.fr_status,c.chain_name,s.coin_name,t.app_id,b.wallet_name as walletName,
+      t.rule_name
+    
+      from frozen_release_rule t
+      left join main_chain c on t.chian_id=c.chain_id
+      left join sub_chain s on t.coin_id=s.coin_id 
+      left join app_wallet b on t.app_id = b.zid 
+      where 1=1 
+      <if test="appId != null and appId != ''">
+      	and t.app_id=#{appId}
+      </if>
+    order by t.create_time
+  </select>
+  <select id="getById" resultMap="ruleDetail">
+    select   t.id,t.rule_id,t.fr_type,t.chian_id,t.coin_id,t.public_key,t.fr_status,t.mom,e.detail_id,
+      t.create_time,t.update_time,t.pay_passwd,t.app_id,b.wallet_name as walletName,e.proportion,
+      e.execut_time,e.left_proportion,e.avg_days,t.rule_name
+      from frozen_release_rule t left join frozen_release_detail_rule e on t.rule_id = e.rule_id
+      left join app_wallet b on t.app_id = b.zid 
+      where t.rule_id=#{ruleId}
+    order by e.execut_time
+  </select>
+
+  <resultMap id="map" type="com.jinglitong.wallet.api.model.logic.ReleaseCurrencyVo">
+    <result column="currency" property="currency" />
+    <result column="sum" property="sum" />
+  </resultMap>
+  <select id="selectBy" resultMap="map">
+select  a.amount  sum, c.coin_name currency from frozen_release_excel_source_amount a LEFT JOIN frozen_release_excel_source  s
+on a.source_id = s.source_id
+LEFT JOIN sub_chain c on s.coin_id = c.coin_id
+where s.source_status != 3 and s.customer_id =#{param1} and   s.wallet_id = #{param2}  and s.app_id = #{param3}
+  </select>
+
+
+  <select id="selectByRuleId" resultMap="BaseResultMap">
+    select * from frozen_release_rule where rule_id = #{ruleId}
+</select>
+  
+  <select id="qryRule" resultType="map">
+    select t.rule_id,t.create_time,t.fr_type,t.fr_status,c.chain_name,s.coin_name,t.rule_name,a.wallet_name as walletName from frozen_release_rule t
+      left join main_chain c on t.chian_id=c.chain_id
+      left join sub_chain s on t.coin_id=s.coin_id ,app_wallet a where a.zid=t.app_id
+      <if test="param1 !='' and param1 != null ">
+          and  t.rule_name like concat('%',#{param1},'%')
+        </if>
+      <if test="param2 !='' and param2 != null ">
+          and  t.app_id=#{param2} 
+        </if>
+    order by t.create_time
+  </select>
+</mapper>

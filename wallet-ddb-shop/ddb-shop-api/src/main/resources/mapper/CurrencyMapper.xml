@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.CurrencyMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Currency" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="currencyCode" property="currencycode" jdbcType="VARCHAR" />
+    <result column="currencyName" property="currencyname" jdbcType="VARCHAR" />
+    <result column="digitalCode" property="digitalcode" jdbcType="VARCHAR" />
+    <result column="currencySign" property="currencysign" jdbcType="VARCHAR" />
+    <result column="currencyUnit" property="currencyunit" jdbcType="VARCHAR" />
+    <result column="isDigitalCurrency" property="isdigitalcurrency" jdbcType="BIT" />
+    <result column="chainType" property="chaintype" jdbcType="TINYINT" />
+    <result column="isEnabled" property="isenabled" jdbcType="TINYINT" />
+    <result column="iconSrc" property="iconsrc" jdbcType="VARCHAR" />
+    <result column="orders" property="orders" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+</mapper>

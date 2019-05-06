@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.job.mapper.FrozenReleaseDetailRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.FrozenReleaseDetailRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="detail_id" property="detailId" jdbcType="VARCHAR" />
+    <result column="rule_id" property="ruleId" jdbcType="VARCHAR" />
+    <result column="proportion" property="proportion" jdbcType="INTEGER" />
+    <result column="execut_time" property="executTime" jdbcType="TIMESTAMP" />
+    <result column="left_proportion" property="leftProportion" jdbcType="INTEGER" />
+    <result column="detail_status" property="detailStatus" jdbcType="INTEGER" />
+    <result column="avg_days" property="avgDays" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="map" type="com.jinglitong.wallet.api.model.FrozenReleaseDetailRule" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="detail_id" property="detailId" jdbcType="VARCHAR" />
+    <result column="rule_id" property="ruleId" jdbcType="VARCHAR" />
+    <result column="proportion" property="proportion" jdbcType="INTEGER" />
+    <result column="execut_time" property="executTime" jdbcType="TIMESTAMP" />
+    <result column="left_proportion" property="leftProportion" jdbcType="INTEGER" />
+    <result column="detail_status" property="detailStatus" jdbcType="INTEGER" />
+    <result column="avg_days" property="avgDays" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="dapp_id" property="appId" jdbcType="VARCHAR" />
+    <association property="rule"  javaType="com.jinglitong.wallet.api.model.FrozenReleaseRule" >
+      <id column="tid" property="id" jdbcType="INTEGER" />
+      <result column="truleid" property="ruleId" jdbcType="VARCHAR" />
+      <result column="tfrtype" property="frType" jdbcType="INTEGER" />
+      <result column="tchianid" property="chianId" jdbcType="VARCHAR" />
+      <result column="tcoinid" property="coinId" jdbcType="VARCHAR" />
+      <result column="tpublickey" property="publicKey" jdbcType="VARCHAR" />
+      <result column="tstatus" property="frStatus" jdbcType="INTEGER" />
+      <result column="tmom" property="mom" jdbcType="VARCHAR" />
+      <result column="tcreatetime" property="createTime" jdbcType="TIMESTAMP" />
+      <result column="tupdatetime" property="updateTime" jdbcType="TIMESTAMP" />
+      <result column="tpaypasswd" property="payPasswd" jdbcType="LONGVARCHAR" />
+      <result column="tapp_id" property="appId" jdbcType="VARCHAR" />
+      <association property="subChain"  javaType="com.jinglitong.wallet.api.model.SubChain">
+        <result column="scurrency" property="currency" jdbcType="VARCHAR" />
+        <result column="tokenaddress" property="tokenAddress" jdbcType="VARCHAR" />
+      </association>
+    </association>
+  </resultMap>
+
+  <select id="selectTodayRules" resultMap="map">
+    SELECT
+	d.id,
+	d.`avg_days`,
+	d.`create_time`,
+	d.`detail_id`,
+	d.`detail_status`,
+	d.`execut_time`,
+	d.`left_proportion`,
+	d.`proportion`,
+	d.`rule_id`,
+	d.`update_time`,
+	d.app_id dapp_id,
+	t.id tid,
+	t.`rule_id` truleid,
+	t.`chian_id` tchianid,
+	t.`coin_id` tcoinid,
+	t.`create_time` tcreatetime,
+	t.`fr_status` tstatus,
+	t.`mom` tmom,
+	t.`pay_passwd` tpaypasswd,
+	t.`public_key` tpublickey,
+	t.`update_time` tupdatetime,
+	t.fr_type tfrtype,
+	t.app_id tapp_id,
+	s.`currency` scurrency,
+	s.`token_address` tokenaddress
+FROM
+	frozen_release_detail_rule d
+LEFT JOIN frozen_release_rule t ON d.`rule_id` = t.`rule_id`
+LEFT JOIN main_chain c ON t.chian_id = c.chain_id
+LEFT JOIN sub_chain s ON t.coin_id = s.coin_id
+WHERE
+	TO_DAYS(NOW()) >= TO_DAYS(execut_time)
+AND d.`detail_status` != 3
+AND d.`detail_status` != 2
+ORDER BY
+	d.`execut_time`;
+
+
+  </select>
+  
+  <select id="selecByDetailId" resultMap="BaseResultMap">
+    select * from frozen_release_detail_rule where detail_id = #{detailId}
+  </select>
+
+
+  <select id="selectByState" resultMap="map">
+   SELECT d.id,d.`avg_days`,d.`create_time`,d.`detail_id`,d.`detail_status`,d.`execut_time`,d.`left_proportion`,d.`proportion`,d.`rule_id`,d.`update_time`,d.app_id dapp_id,
+    t.id tid,t.`rule_id` truleid, t.`chian_id` tchianid, t.`coin_id` tcoinid, t.`create_time` tcreatetime, t.`fr_status` tstatus, t.`mom` tmom, t.`pay_passwd` tpaypasswd, t.`public_key` tpublickey,
+    t.`update_time` tupdatetime ,t.fr_type tfrtype,t.app_id tapp_id,
+    s.`currency` scurrency,s.`token_address` tokenaddress, f.`account` faccount, f.`address` faddress,f.`amount` famount, f.`create_time` fcreatetime, f.`chain_id` fchainid , f.`coin_id` fcoinid , f.`customer_id` fcustomer_id,
+    f.`import_time` fimporttime,f.id fid,f.app_id fapp_id,
+    f.`rule_id` fruleid, f.`source_id` fsourceid, f.`source_status` fsourcestatus, f.`update_time` fupdatetime , f.`wallet_id` fwalletid FROM frozen_release_detail_rule d LEFT JOIN frozen_release_rule t ON d.`rule_id` = t.`rule_id` LEFT JOIN main_chain c ON t.chian_id=c.chain_id
+    LEFT JOIN sub_chain s ON t.coin_id=s.coin_id LEFT JOIN frozen_release_excel_source f  ON f.`rule_id` = t.`rule_id` WHERE TO_DAYS(NOW()) >=TO_DAYS(execut_time)   AND f.`source_status` != 3 AND  d.`detail_status` = #{state}
+    order by d.`execut_time` ;
+  </select>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.checkserver.mapper.DdbRewardRuleDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbRewardRuleDetail" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="rule_zid" property="ruleZid" jdbcType="VARCHAR" />
+    <result column="rule_type" property="ruleType" jdbcType="INTEGER" />
+    <result column="shoreholder_level_define" property="shoreholderLevelDefine" jdbcType="VARCHAR" />
+    <result column="reward_percent" property="rewardPercent" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <select id="selectDdbRewardRuleDetail" resultType="com.jinglitong.wallet.ddbapi.model.logic.FRuleInfo">
+ 	SELECT c.level_seq_no fLevel, b.zid fRuleDetailID,b.reward_percent fRate
+	FROM ddb_reward_rule a
+	LEFT JOIN ddb_reward_rule_detail b ON a.zid=b.rule_zid
+	LEFT JOIN ddb_shoreholder_rule c ON c.level_define = b.shoreholder_level_define
+	WHERE
+		a.rule_type=3
+	AND
+		now()>=a.effective_time 
+	AND a.expiry_time > now()
+  </select>
+  
+  <select id="selectZidByRuleType" resultType="map">
+  	SELECT b.zid zid
+  	FROM ddb_reward_rule a 
+  	LEFT JOIN ddb_reward_rule_detail b 
+  	ON a.zid=b.rule_zid ANd a.rule_type = b.rule_type 
+  	WHERE a.rule_type = #{type}
+  	AND now()>=a.effective_time 
+	AND a.expiry_time > now()
+  </select>
+  
+  <select id="selectLevelNum" resultType="String">
+  	SELECT
+		b.shoreholder_level_define
+	FROM
+		ddb_reward_rule a
+	LEFT JOIN ddb_reward_rule_detail b ON a.rule_type = b.rule_type
+	WHERE
+		a.rule_type = #{ruleType}
+	AND NOW() >= a.effective_time
+	AND a.expiry_time > NOW()
+  </select>
+  
+    <select id="selectRateBylevelAndType" resultType="int">
+	  	SELECT
+			reward_percent
+		FROM
+			ddb_reward_rule_detail
+		WHERE
+			rule_type = #{ruleType}
+		AND shoreholder_level_define = #{levelDefine}
+  	</select>
+  
+</mapper>

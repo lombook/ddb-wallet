@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.server.mapper.LockCoinRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.LockCoinRecord" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="lock_record_id" property="lockRecordId" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="wallet_id" property="walletId" jdbcType="VARCHAR" />
+    <result column="coin_id" property="coinId" jdbcType="VARCHAR" />
+    <result column="wallet_address" property="walletAddress" jdbcType="VARCHAR" />
+    <result column="lock_days" property="lockDays" jdbcType="INTEGER" />
+    <result column="lock_rate" property="lockRate" jdbcType="INTEGER" />
+    <result column="lock_start_date" property="lockStartDate" jdbcType="DATE" />
+    <result column="lock_end_date" property="lockEndDate" jdbcType="DATE" />
+    <result column="lock_roue_id" property="lockRoueId" jdbcType="VARCHAR" />
+    <result column="reward_amount" property="rewardAmount" jdbcType="VARCHAR" />
+    <result column="lock_amount" property="lockAmount" jdbcType="VARCHAR" />
+    <result column="pay_hash" property="payHash" jdbcType="VARCHAR" />
+    <result column="recevice_hash" property="receviceHash" jdbcType="VARCHAR" />
+    <result column="sweet_hash" property="sweetHash" jdbcType="VARCHAR" />
+    <result column="lock_status" property="lockStatus" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+    <result column="recevice_time" property="receviceTime" jdbcType="TIMESTAMP" />
+    <result column="sweet_time" property="sweetTime" jdbcType="TIMESTAMP" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="LockRecord" type="com.jinglitong.wallet.api.model.logic.LockCoinRecordCustomer" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="lock_record_id" property="lockRecordId" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="wallet_id" property="walletId" jdbcType="VARCHAR" />
+    <result column="coin_id" property="coinId" jdbcType="VARCHAR" />
+    <result column="wallet_address" property="walletAddress" jdbcType="VARCHAR" />
+    <result column="lock_days" property="lockDays" jdbcType="INTEGER" />
+    <result column="lock_rate" property="lockRate" jdbcType="INTEGER" />
+    <result column="lock_start_date" property="lockStartDate" jdbcType="DATE" />
+    <result column="lock_end_date" property="lockEndDate" jdbcType="DATE" />
+    <result column="lock_roue_id" property="lockRoueId" jdbcType="VARCHAR" />
+    <result column="reward_amount" property="rewardAmount" jdbcType="VARCHAR" />
+    <result column="lock_amount" property="lockAmount" jdbcType="VARCHAR" />
+    <result column="pay_hash" property="payHash" jdbcType="VARCHAR" />
+    <result column="recevice_hash" property="receviceHash" jdbcType="VARCHAR" />
+    <result column="sweet_hash" property="sweetHash" jdbcType="VARCHAR" />
+    <result column="lock_status" property="lockStatus" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+    <result column="recevice_time" property="receviceTime" jdbcType="TIMESTAMP" />
+    <result column="sweet_time" property="sweetTime" jdbcType="TIMESTAMP" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="walletName" property="walletName" jdbcType="VARCHAR" />
+    <association property="customer" column="cust_id" select="com.jinglitong.wallet.server.mapper.CustomerMapper.selectByCusId"></association>
+    <association property="wallet" column="wallet_id" select="com.jinglitong.wallet.server.mapper.WalletMapper.selectById"></association>
+    <association property="subChain" column="coin_id" select="com.jinglitong.wallet.server.mapper.SubChainMapper.selectById"></association>
+  </resultMap>
+  <select id="recordListByChainCoin" resultMap="LockRecord">
+    select a.*,b.wallet_name as walletName from lock_coin_record a left join app_wallet b on a.app_id = b.zid  where 1=1
+    <if test="lockRoueId != null and lockRoueId != ''">
+    	 and a.lock_roue_id = #{lockRoueId}
+    </if>
+    <if test="createTime != null and createTime!= ''">
+    	 and a.lock_start_date &gt;= #{createTime}
+    </if>
+    <if test="updateTime != null and updateTime != ''">
+    	 and a.lock_end_date &lt;= #{updateTime}
+    </if>
+    <if test="lockStatus != null and lockStatus != ''">
+    	 and a.lock_status = #{lockStatus}
+    </if>
+    <if test="appId != null and appId != ''">
+		and a.app_id = #{appId}
+	</if>
+  </select>
+  
+  <select id="recordToltal" resultType="com.jinglitong.wallet.api.model.view.LockCoinToltalVo" parameterType="com.jinglitong.wallet.api.model.view.LockCoinToltalVo">
+	SELECT
+	b.chain_id as chainId,m.chain_name as chainName,a.coin_id as coinId,s.currency as coinName,COUNT(a.lock_record_id)
+	AS num,
+	SUM(a.lock_amount) + sum(a.reward_amount) AS toltalAmount,a.app_id as appId,p.wallet_name as walletName
+	FROM
+	lock_coin_record a
+	join lock_coin_rule b
+	on a.lock_roue_id = b.lock_rule_id
+	join main_chain m
+	on b.chain_id = m.chain_id
+	join sub_chain s
+	on a.coin_id = s.coin_id
+	left join app_wallet p on a.app_id = p.zid
+	WHERE
+	a.lock_end_date &lt;= #{endDate} and (a.lock_status='2' or a.lock_status='5')
+	<if test="appId != null and appId != ''">
+		and a.app_id = #{appId}
+	</if>
+	GROUP BY
+	b.chain_id,
+	a.coin_id    
+  </select>
+
+ <select id="recordToltalDetail" resultMap="LockRecord" parameterType="com.jinglitong.wallet.api.model.view.LockCoinToltalVo">
+ 	SELECT
+	a.*,p.wallet_name as walletName
+	FROM
+	lock_coin_record a
+	JOIN lock_coin_rule b ON a.lock_roue_id = b.lock_rule_id
+	left join app_wallet p on a.app_id = p.zid
+	WHERE 1=1 and a.lock_end_date &lt;= #{endDate} and (a.lock_status='2' or a.lock_status='5')
+	<if test="coinId != null and coinId != ''">
+		and a.coin_id = #{coinId}
+	</if>
+	<if test="chainId != null and chainId != ''">
+		and b.chain_id = #{chainId}
+	</if>
+	<if test="appId != null and appId != ''">
+		and a.app_id = #{appId}
+	</if>
+ </select>
+ <select id="countByDate" resultType="int">
+ 	select count(*) from lock_coin_record where 1=1
+ 	<if test="lockEndDate != null and lockEndDate != ''">
+ 	 and lock_end_date &lt;= #{lockEndDate} and (lock_status ='2' or lock_status ='5') 
+ 	</if>
+ </select>
+
+	<select id="selectByDate" resultType="com.jinglitong.wallet.api.model.logic.UnLockVo">
+		SELECT
+		a.wallet_address AS destAddress,
+		b.address AS fromAddress,
+		a.lock_amount + a.reward_amount AS amount,
+		s.currency AS currency,
+		s.token_address AS ISSUER,
+		b.secret AS secretkey,
+		b.chain_id as chainId,
+		b.cust_id as custid,
+		a.lock_record_id as lockRecordId,
+		a.coin_id as coinId,
+		a.wallet_id as walletId
+		FROM
+		lock_coin_record a
+		JOIN lock_coin_rule b ON a.lock_roue_id = b.lock_rule_id
+		JOIN sub_chain s ON a.coin_id = s.coin_id
+		where 1=1 and (a.lock_status ='2' or a.lock_status ='5')
+		<if test="lockEndDate != null and lockEndDate != ''">
+			and a.lock_end_date &lt;= #{lockEndDate}
+		</if>
+	</select>
+	<update id="updateStatusById" parameterType="com.jinglitong.wallet.api.model.LockCoinRecord">
+		UPDATE lock_coin_record
+		SET 
+		<if test="lockStatus != null and lockStatus != ''">
+			lock_status = #{lockStatus},
+		</if>
+		<if test="updateTime != null and updateTime != ''">
+			update_time = #{updateTime}
+		</if>
+		WHERE
+		lock_record_id = #{lockRecordId}
+	
+	</update>
+
+</mapper>

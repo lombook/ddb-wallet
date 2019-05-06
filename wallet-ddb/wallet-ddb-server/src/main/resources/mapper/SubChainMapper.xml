@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.SubChainMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.SubChain">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="coin_id" jdbcType="VARCHAR" property="coinId" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="coin_name" jdbcType="VARCHAR" property="coinName" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="coin_img" jdbcType="VARCHAR" property="coinImg" />
+    <result column="coin_remark" jdbcType="VARCHAR" property="coinRemark" />
+    <result column="token_address" jdbcType="VARCHAR" property="tokenAddress" />
+    <result column="state" jdbcType="BIT" property="state" />
+    <result column="base_chain" jdbcType="BIT" property="baseChain" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="getSubChains" resultType="java.util.Map">
+    select sc.id,sc.app_id,sc.base_chain,sc.chain_id,
+    sc.coin_id,sc.coin_img,sc.coin_name,sc.coin_remark,
+    sc.create_time,sc.currency,sc.state,sc.token_address,
+    sc.update_time,aw.wallet_name from sub_chain  sc  left  join app_wallet aw  on  sc.app_id=aw.zid
+    <where>
+      <if test="chainId !=null and chainId != ''">
+        and sc.chain_id = #{chainId}
+      </if>
+      <if test="coinName !=null and coinName != ''">
+        and sc.coin_name like CONCAT('%',#{coinName},'%' )
+      </if>
+      <if test="currency!=null and currency!=''">
+        and sc.currency like CONCAT('%',#{currency},'%' )
+      </if>
+      <if test="coinRemark!=null and coinRemark!=''">
+        and sc.coin_remark like CONCAT('%',#{coinRemark},'%' )
+      </if>
+      <if test="state==true">
+        and sc.state = 1
+      </if>
+      <if test="state==false">
+        and sc.state = 0
+      </if>
+      <if test="appId!=null and appId!=''">
+        and sc.app_id = #{appId}
+      </if>
+    </where>
+    GROUP BY sc.chain_id,sc.coin_id
+    ORDER by sc.chain_id , sc.create_time DESC
+  </select>
+  <select id="selectByChainId" resultMap="BaseResultMap">
+    select * from sub_chain
+    <where>
+      chain_id = #{chainId} and  state != 0
+      <if test="appId != null and appId != ''">
+        and app_id=#{appId}
+      </if>
+    </where>
+  </select>
+  <select id="selectById" resultMap="BaseResultMap">
+    select * from sub_chain where id = #{id}
+  </select>
+  <select id="selectByCoinId" resultMap="BaseResultMap">
+    select * from sub_chain where coin_id = #{coinId}
+  </select>
+</mapper>

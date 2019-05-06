@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.give.mapper.DdbGoodsRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbGoodsRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="product_price" property="productPrice" jdbcType="INTEGER" />
+    <result column="zrule_group" property="zruleGroup" jdbcType="VARCHAR" />
+    <result column="frule_group" property="fruleGroup" jdbcType="VARCHAR" />
+    <result column="grule_group" property="gruleGroup" jdbcType="VARCHAR" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+    <result column="expiry_time" property="expiryTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultRules" type="com.jinglitong.wallet.ddbapi.model.DdbGoodsRule" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="product_price" property="productPrice" jdbcType="INTEGER" />
+    <result column="zrule_group" property="zruleGroup" jdbcType="VARCHAR" />
+    <result column="frule_group" property="fruleGroup" jdbcType="VARCHAR" />
+    <result column="grule_group" property="gruleGroup" jdbcType="VARCHAR" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+    <result column="expiry_time" property="expiryTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+
+    <collection property="ddbGiveRuleList" column="zrule_group"
+                ofType="com.jinglitong.wallet.ddbapi.model.DdbGiveRule" select="com.jinglitong.wallet.give.mapper.DdbGiveRuleMapper.selectBygroupName">
+    </collection>
+
+    <collection property="ddbGrowRuleList" column="grule_group"
+                ofType="com.jinglitong.wallet.ddbapi.model.DdbGrowRule" select="com.jinglitong.wallet.give.mapper.DdbGrowRuleMapper.selectBygroupName">
+    </collection>
+
+
+  </resultMap>
+
+  <select id="selectByZid" resultMap="BaseResultMap">
+    select * from ddb_goods_rule where zid = #{zid}
+  </select>
+
+  <select id="selectAllGoodsRuleByZid" resultMap="ResultRules">
+      select * from ddb_goods_rule where zid = #{zid} and  now()>effective_time and expiry_time > now()
+  </select>
+</mapper>

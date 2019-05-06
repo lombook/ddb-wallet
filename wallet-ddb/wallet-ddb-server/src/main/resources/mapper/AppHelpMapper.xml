@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.AppHelpMapper">
+    <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.AppHelp">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="help_id" property="helpId" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="app_type" property="appType" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="BIT"/>
+        <result column="show_order" property="showOrder" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="body" property="body" jdbcType="LONGVARCHAR"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="map" type="com.jinglitong.wallet.api.model.view.AppHelpSelVO">
+    	<id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="help_id" property="helpId" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="app_type" property="appType" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="BIT"/>
+        <result column="show_order" property="showOrder" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="body" property="body" jdbcType="LONGVARCHAR"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+        <result column="walletName" property="walletName" jdbcType="VARCHAR" />
+    </resultMap>
+    <select id="getAppHelps" resultMap="map">
+        select a.*,b.wallet_name as walletName from app_help a left join app_wallet b 
+        on a.app_id = b.zid 
+        <where>
+            <if test="title !=null and title != ''">
+                and title like CONCAT('%',#{title},'%' )
+            </if>
+            <if test="body !=null and body != ''">
+                and body like CONCAT('%',#{body},'%' )
+            </if>
+            <if test="remark!=null and remark!=''">
+                and remark = CONCAT('%',#{remark},'%' )
+            </if>
+            <if test="state!=null and state!=''">
+                and state = #{state}
+            </if>
+            <if test="appId !=null and appId!=''">
+                and app_id = #{appId}
+            </if>
+        </where>
+        order by show_order DESC, create_time DESC
+    </select>
+    
+    <update id="updateByHelpId" parameterType="com.jinglitong.wallet.api.model.AppHelp">
+    	update app_help set
+    	<if test="title != null and title != ''">
+    		title=#{title},
+    	</if>
+    	<if test="remark != null and remark != ''">
+    		remark=#{remark},
+    	</if>
+    	<if test="body != null and body != ''">
+    		body=#{body},
+    	</if>
+    	<if test="appType != null and appType != ''">
+    		app_type=#{appType},
+    	</if>
+    	<if test="state != null and state != ''">
+    		state=#{state},
+    	</if>
+    	<if test="showOrder != null and showOrder != ''">
+    		show_order=#{showOrder},
+    	</if>
+    	<if test="appId != null and appId != ''">
+    		app_id=#{appId},
+    	</if>
+    	<if test="updateTime != null and updateTime != ''">
+    		update_time=#{updateTime}
+    	</if>
+    </update>
+
+</mapper>

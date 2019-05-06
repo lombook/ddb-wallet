@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.checkserver.mapper.DdbIntegralAccountMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbIntegralAccount" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="BIGINT" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="real_cname" property="realCname" jdbcType="VARCHAR" />
+    <result column="integ_name" property="integName" jdbcType="VARCHAR" />
+    <result column="integ_cname" property="integCname" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <select id="selectSumCustIntegralRecord" resultType="java.util.Map">
+  	 select  sum(amount) sumam from  ddb_cust_integral_record where create_time BETWEEN  #{param1}  and #{param2}
+  </select>
+
+  <select id="selectSumIntegralAccountSeq" resultType="java.util.Map">
+ 	 select  sum(amount) sumam from  ddb_integral_account_seq where create_time BETWEEN  #{param1} and #{param2}
+  </select>
+
+  <select id="selectSumIntegralWalletSeq" resultType="java.util.Map">
+ 	 select  sum(amount) sumam from  ddb_integral_wallet_seq where create_time BETWEEN  #{param1} and #{param2}
+  </select>
+
+
+
+
+  <select id="selectByRecordRealName" resultType="java.util.Map">
+select sum(amount) sumam,real_name,real_cname from ddb_cust_integral_record  where real_name = #{param3}and type = #{param4} and  create_time BETWEEN  #{param1} and #{param2};
+  </select>
+  <select id="selectByAccountRealName" resultType="java.util.Map">
+select sum(amount) sumam,real_name,real_cname from ddb_integral_account_seq  where  real_name = #{param3}and type = #{param4} and  create_time BETWEEN  #{param1} and #{param2};
+  </select>
+  <select id="selectByWalletRealName" resultType="java.util.Map">
+select sum(amount) sumam,real_name,real_cname from ddb_integral_wallet_seq  where  real_name = #{param3}and type = #{param4} and  create_time BETWEEN  #{param1} and #{param2};
+  </select>
+
+
+
+  <select id="selectAccountRealNameBitAfter" resultType="java.util.Map">
+select SQL_NO_CACHE before_amount minam,after_amount mixam,real_name,real_cname
+ from ddb_integral_account_seq  where  real_name = #{param3} and create_time BETWEEN  #{param1} and #{param2}    order by create_time ${param4},id ${param4}   limit 1;  </select>
+  <select id="selectAccountRealNamebefore" resultType="java.util.Map">
+select  before_amount minam,after_amount mixam,real_name,real_cname
+ from ddb_integral_account_seq  where  real_name = #{param3} and create_time BETWEEN  #{param1} and #{param2}    order by create_time ${param4},id ${param4} limit 1;  </select>
+  <select id="selectRealAmountType" resultType="java.util.Map">
+select sum(amount) sumam,real_name,real_cname,type from ddb_integral_account_seq where create_time BETWEEN  #{param1} and #{param2} and type = #{param3}  GROUP BY real_name ;
+  </select>
+
+
+  <select id="selectWalletRealNameBit" resultType="java.util.Map">
+select  before_amount minam,after_amount mixam,inte_name,inte_cname,cust_id
+ from ddb_integral_wallet_seq where cust_id = #{param5} and inte_name = #{param3} and   create_time BETWEEN  #{param1} and #{param2}  order by create_time ${param4},id ${param4} limit 1;  </select>
+
+  <select id="selectWalletRealNameBitbefore" resultType="java.util.Map">
+    select  before_amount minam,after_amount mixam,inte_name,inte_cname,cust_id
+ from ddb_integral_wallet_seq where cust_id = #{param5} and inte_name = #{param3} and  #{param1} >  create_time    order by create_time ${param4},id ${param4} limit 1;  </select>
+
+
+  <select id="selectRealWalletType" resultType="java.util.Map">
+select sum(amount) sumam,inte_name,inte_cname,type from ddb_integral_wallet_seq where create_time BETWEEN  #{param1} and #{param2} and type = #{param3} and inte_name = #{param4} and cust_id = #{param5} ;
+  </select>
+
+  <select id="selectCustId" resultType="java.util.Map">
+    select distinct cust_id  from ddb_integral_wallet_seq where create_time BETWEEN  #{param1} and #{param2}
+  </select>
+
+  <select id="selectIntegeName" resultMap="BaseResultMap">
+    select * from ddb_integral_account group by integ_name
+  </select>
+  <select id="selectByRealName" resultMap="BaseResultMap">
+    select * from ddb_integral_account where real_name = #{realName}
+  </select>
+  
+  <update id="updCustomerStatus" parameterType="java.util.Map">
+    	update customer set remark=#{remark} ,state=#{state} where cust_id=#{cust_id} 
+  </update>
+
+  <select id="selectCustomerByCustId" resultType="java.util.Map">
+    select * from customer where cust_id=#{cust_id}
+  </select>
+
+  <select id="selectRealRecordType" resultType="java.util.Map">
+    select sum(amount) sumam,integ_name,integ_cname,type from ddb_cust_integral_record where create_time BETWEEN  #{param1} and #{param2} and type = #{param3} and integ_name = #{param4} and cust_id = #{param5} ;
+  </select>
+  <resultMap id="AccountMap" type="com.jinglitong.wallet.ddbapi.model.DdbIntegralAccountSeq">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="flow_id" jdbcType="VARCHAR" property="flowId" />
+    <result column="inte_id" jdbcType="VARCHAR" property="inteId" />
+    <result column="real_cname" jdbcType="VARCHAR" property="realCname" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="inte_cname" jdbcType="VARCHAR" property="inteCname" />
+    <result column="inte_name" jdbcType="VARCHAR" property="inteName" />
+    <result column="before_amount" jdbcType="BIGINT" property="beforeAmount" />
+    <result column="amount" jdbcType="BIGINT" property="amount" />
+    <result column="after_amount" jdbcType="BIGINT" property="afterAmount" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <select id="selectAccountSeqByIntegName" resultMap="AccountMap">
+    select  *
+    from ddb_integral_account_seq  where  inte_name = #{param3} and create_time BETWEEN  #{param1} and #{param2};
+  </select>
+
+  <resultMap id="RecordMap" type="com.jinglitong.wallet.ddbapi.model.DdbCustIntegralRecord" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="INTEGER" />
+    <result column="inte_zid" property="inteZid" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="real_cname" property="realCname" jdbcType="VARCHAR" />
+    <result column="integ_name" property="integName" jdbcType="VARCHAR" />
+    <result column="integ_cname" property="integCname" jdbcType="VARCHAR" />
+    <result column="cost_type" property="costType" jdbcType="INTEGER" />
+    <result column="hash" property="hash" jdbcType="VARCHAR" />
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+
+  <select id="selectByRecordByIntegName" resultMap="RecordMap">
+     select  *
+    from ddb_cust_integral_record  where  integ_name = #{param3} and create_time BETWEEN  #{param1} and #{param2}
+  </select>
+
+  <select id="selectDdbIntegralGroupName" resultType="java.util.Map">
+    select  integ_name  from ddb_cust_integral_record where create_time BETWEEN  #{beginTime} and #{endTime} group by integ_name
+  </select>
+  
+  <select id="selectDdbIntegralNames" resultType="java.util.Map">
+    select  integ_name , integ_cname from ddb_integral_account_record group by integ_name
+  </select>
+  
+  <select id="selectDdbIntegralByIntegName" resultType="Long">    
+		SELECT 	sum( r.amount ) FROM ddb_integral_account_record r WHERE r.integ_name = #{integName}  UNION ALL
+		SELECT	sum( a.amount ) FROM ddb_integral_account a WHERE	a.integ_name = #{integName} AND a.real_name &lt;&gt; #{integName} UNION ALL
+		SELECT	sum( t.amount ) FROM ddb_integral_wallet t WHERE t.inte_name = #{integName} 
+  </select>
+  
+  <select id="selectDdbIntegralRealNames" resultType="String">
+    select  real_name  from ddb_cust_integral_record group by real_name
+  </select>
+    
+  
+  <select id="selectDdbIntegralByRealName" resultType="Long">    
+		SELECT 	sum( r.amount ) FROM ddb_integral_account_record r WHERE r.integ_name = #{integName}  UNION ALL
+		SELECT	sum( a.amount ) FROM ddb_integral_account a WHERE	a.real_name = #{integName} AND a.parent_id is not null UNION ALL
+		SELECT	sum( t.amount ) FROM ddb_cust_integral_record t WHERE t.real_name = #{integName}  
+  </select>
+</mapper>

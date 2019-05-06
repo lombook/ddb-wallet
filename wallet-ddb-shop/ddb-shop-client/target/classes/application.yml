@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: dev,@pf@
+  servlet:
+      multipart:
+        max-file-size: 5MB
+        max-request-size: 10MB
+mybatis:
+  type-aliases-package: com.jinglitong.springshop.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  
+
+  

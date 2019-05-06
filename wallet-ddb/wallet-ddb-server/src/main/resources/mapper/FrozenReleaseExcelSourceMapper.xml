@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.FrozenReleaseExcelSourceMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.FrozenReleaseExcelSource">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="amount" jdbcType="VARCHAR" property="amount" />
+    <result column="rule_id" jdbcType="VARCHAR" property="ruleId" />
+    <result column="import_time" jdbcType="TIMESTAMP" property="importTime" />
+    <result column="customer_id" jdbcType="VARCHAR" property="customerId" />
+    <result column="wallet_id" jdbcType="VARCHAR" property="walletId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="coin_id" jdbcType="VARCHAR" property="coinId" />
+    <result column="source_status" jdbcType="INTEGER" property="sourceStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="map" type="com.jinglitong.wallet.api.model.FrozenReleaseExcelSource">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="amount" jdbcType="VARCHAR" property="amount" />
+    <result column="rule_id" jdbcType="VARCHAR" property="ruleId" />
+    <result column="import_time" jdbcType="TIMESTAMP" property="importTime" />
+    <result column="customer_id" jdbcType="VARCHAR" property="customerId" />
+    <result column="wallet_id" jdbcType="VARCHAR" property="walletId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="coin_id" jdbcType="VARCHAR" property="coinId" />
+    <result column="source_status" jdbcType="INTEGER" property="sourceStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="walletName" property="walletName" jdbcType="VARCHAR" />
+    <result column="rest" property="rest" jdbcType="VARCHAR" />
+    <result column="relea" property="relea" jdbcType="VARCHAR" />
+    <association property="mainChain" column="chain_id"
+                 select="com.jinglitong.wallet.ddbserver.mapper.MainChainMapper.getMainChainById">
+    </association>
+  </resultMap>
+
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into frozen_release_excel_source
+    (source_id, account,
+    rule_id,import_time,customer_id,wallet_id,address,chain_id,coin_id,source_status,create_time,update_time,amount,app_id)
+    values
+    <foreach collection="list" index="index" item="sourceBean" separator=",">
+      (
+      #{sourceBean.sourceId},#{sourceBean.account},#{sourceBean.ruleId},#{sourceBean.importTime},
+      #{sourceBean.customerId},#{sourceBean.walletId},#{sourceBean.address},#{sourceBean.chainId},
+      #{sourceBean.coinId},#{sourceBean.sourceStatus},#{sourceBean.createTime},#{sourceBean.updateTime},#{sourceBean.amount}
+      ,#{sourceBean.appId}
+      )
+    </foreach>
+  </insert>
+  <select id="selectByRuleId" resultMap="map" parameterType="com.jinglitong.wallet.api.model.walletVo.FrozenReleaseVO">
+    SELECT
+	a.*, b.wallet_name AS walletName,IFNULL(a.amount-f.amount,0) as  rest,IFNULL(f.amount,0) as relea
+	FROM
+	frozen_release_excel_source a
+	LEFT JOIN app_wallet b ON a.app_id = b.zid
+	left join frozen_release_excel_source_amount f on a.source_id = f.source_id
+    where a.rule_id = #{ruleId}
+    <if test="appId != null and appId != ''">
+    	and a.app_id =#{appId}
+    </if>
+    <if test="account != null and account != ''">
+    	 AND   a.account like concat('%',#{account},'%')
+    </if>
+  </select>
+
+  <select id="selectBySourceId" resultMap="BaseResultMap">
+    select * from frozen_release_excel_source where source_id = #{id}
+  </select>
+
+  <select id="selectCountByRuleId" resultType="Integer">
+    select count(source_id) from frozen_release_excel_source where rule_id = #{id} and source_status != 3
+  </select>
+
+  <select id="selectSourceByWalletIdRuleId" resultMap="BaseResultMap">
+
+    select  * from  frozen_release_excel_source where wallet_id = #{param1} and  rule_id = #{param2}
+  </select>
+
+  <select id="selectByWalletIdDetailId" resultMap="BaseResultMap">
+    SELECT so.source_id
+    from frozen_release_logs t left join frozen_release_detail_rule de
+    on t.detail_id=de.detail_id left join frozen_release_excel_source so ON
+    de.rule_id=so.rule_id and t.wallet_id=so.wallet_id where t.log_id=#{id}
+
+  </select>
+</mapper>

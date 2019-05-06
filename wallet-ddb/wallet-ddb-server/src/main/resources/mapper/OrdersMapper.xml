@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.OrdersMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.Orders" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="areaName" property="areaname" jdbcType="VARCHAR" />
+    <result column="completeDate" property="completedate" jdbcType="TIMESTAMP" />
+    <result column="consignee" property="consignee" jdbcType="VARCHAR" />
+    <result column="expire" property="expire" jdbcType="TIMESTAMP" />
+    <result column="freight" property="freight" jdbcType="DECIMAL" />
+    <result column="invoiceContent" property="invoicecontent" jdbcType="VARCHAR" />
+    <result column="invoiceTitle" property="invoicetitle" jdbcType="VARCHAR" />
+    <result column="isAllocatedStock" property="isallocatedstock" jdbcType="BIT" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="offsetAmount" property="offsetamount" jdbcType="DECIMAL" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="shippingMethodName" property="shippingmethodname" jdbcType="VARCHAR" />
+    <result column="sn" property="sn" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="weight" property="weight" jdbcType="INTEGER" />
+    <result column="zipCode" property="zipcode" jdbcType="VARCHAR" />
+    <result column="area_id" property="areaId" jdbcType="INTEGER" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="shippingMethod_id" property="shippingmethodId" jdbcType="VARCHAR" />
+    <result column="store_id" property="storeId" jdbcType="VARCHAR" />
+    <result column="currency_id" property="currencyId" jdbcType="VARCHAR" />
+    <result column="order_parent" property="orderParent" jdbcType="VARCHAR" />
+    <result column="order_hash" property="orderHash" jdbcType="VARCHAR" />
+    <result column="integral_c_id" property="integralCId" jdbcType="VARCHAR" />
+    <result column="price_code" property="priceCode" jdbcType="VARCHAR" />
+    <result column="integral_code" property="integralCode" jdbcType="VARCHAR" />
+    <result column="integral_price" property="integralPrice" jdbcType="DECIMAL" />
+    <result column="s_value" property="sValue" jdbcType="DECIMAL" />
+    <result column="djb_value" property="djbValue" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+</mapper>

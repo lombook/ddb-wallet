@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.AreaDicMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.AreaDic" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="AREA_ID" property="areaId" jdbcType="INTEGER" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="AREA_CODE" property="areaCode" jdbcType="INTEGER" />
+    <result column="AREA_SPEC_ID" property="areaSpecId" jdbcType="INTEGER" />
+    <result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
+    <result column="SORT_POSITION" property="sortPosition" jdbcType="INTEGER" />
+    <result column="FULL_NAME" property="fullName" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="REMARKS" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectByParent" parameterType="String" resultType="Map">  
+	   SELECT id,name
+	   from area 
+	   where 
+	   <if test="parentId!=null">
+	       parent_id = #{parentId}
+	   	</if> 
+	   	<if test="parentId==null">
+	       parent_id = 'G00156'
+	   	</if> 		
+    </select>
+</mapper>

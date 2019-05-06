@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.ShopOrderRewardMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.ShopOrderReward" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+      <result column="id" property="id" jdbcType="INTEGER" />
+      <result column="flow_id" property="flowId" jdbcType="VARCHAR" />
+      <result column="order_sn" property="orderSn" jdbcType="VARCHAR" />
+      <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+      <result column="reward_state" property="rewardState" jdbcType="INTEGER" />
+      <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+      <result column="order_create_time" property="orderCreateTime" jdbcType="TIMESTAMP" />
+      <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+      <result column="s_value" property="sValue" jdbcType="DECIMAL" />
+      <result column="djb_value" property="djbValue" jdbcType="DECIMAL" />
+  </resultMap>
+  <!--查询该条记录是否已存在-->
+  <select id="getCountByFlowId" parameterType="com.jinglitong.springshop.entity.ShopOrderReward"
+    resultType="int">
+      select count(1)
+        from shop_order_reward
+      where flow_id = #{flowId}
+  </select>
+  <!--保存到shop_order_reward表-->
+  <insert id="saveShopOrderReward"
+          parameterType="com.jinglitong.springshop.entity.ShopOrderReward">
+      insert into shop_order_reward(
+          flow_id,
+          order_sn,
+          cust_id,
+          reward_state,
+          create_time,
+          order_create_time,
+          update_time,
+          s_value,
+          djb_value
+      )
+      value(
+          #{flowId},
+          #{orderSn},
+          #{custId},
+          #{rewardState},
+          CURRENT_TIMESTAMP(),
+          #{orderCreateTime},
+          CURRENT_TIMESTAMP(),
+          #{sValue},
+          #{djbValue}
+      )
+  </insert>
+  <update id="updateRewardState"
+          parameterType="com.jinglitong.springshop.entity.ShopOrderReward" >
+		update shop_order_reward
+        set
+            reward_state = #{rewardState},
+            update_time = CURRENT_TIMESTAMP()
+        where flow_id = #{flowId}
+	</update>
+</mapper>

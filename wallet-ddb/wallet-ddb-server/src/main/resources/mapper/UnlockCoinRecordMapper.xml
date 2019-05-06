@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.UnlockCoinRecordMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.UnlockCoinRecord">
+  	<id column="id" jdbcType="INTEGER" property="id" />
+    <result column="unlock_record_id" jdbcType="VARCHAR" property="unlockRecordId" />
+    <result column="lock_record_id" jdbcType="VARCHAR" property="lockRecordId" />
+    <result column="wallet_id" jdbcType="VARCHAR" property="walletId" />
+    <result column="coin_id" jdbcType="VARCHAR" property="coinId" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="tx_hash" jdbcType="VARCHAR" property="txHash" />
+    <result column="dest_address" jdbcType="VARCHAR" property="destAddress" />
+    <result column="from_address" jdbcType="VARCHAR" property="fromAddress" />
+    <result column="amount" jdbcType="VARCHAR" property="amount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="operate_count" jdbcType="INTEGER" property="operateCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    unlock_record_id, lock_record_id, wallet_id, coin_id, chain_id,tx_hash,dest_address, from_address, 
+    amount, status, operate_count,create_time, update_time
+  </sql>
+  <insert id="insertAll" parameterType="com.jinglitong.wallet.api.model.UnlockCoinRecord">
+    insert into unlock_coin_record (id,unlock_record_id, lock_record_id, wallet_id, 
+      coin_id,chain_id,tx_hash, dest_address, from_address, 
+      amount, status,operate_count, create_time, 
+      update_time)
+    values (#{id},#{unlockRecordId,jdbcType=VARCHAR}, #{lockRecordId,jdbcType=VARCHAR}, #{walletId,jdbcType=VARCHAR}, 
+      #{coinId,jdbcType=VARCHAR},#{chainId},#{txHash}, #{destAddress,jdbcType=VARCHAR}, #{fromAddress,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},1, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateById" parameterType="com.jinglitong.wallet.api.model.UnlockCoinRecord">
+    update unlock_coin_record
+    <set>
+      <if test="lockRecordId != null">
+        lock_record_id = #{lockRecordId,jdbcType=VARCHAR},
+      </if>
+      <if test="walletId != null">
+        wallet_id = #{walletId,jdbcType=VARCHAR},
+      </if>
+      <if test="coinId != null">
+        coin_id = #{coinId,jdbcType=VARCHAR},
+      </if>
+      <if test="chainId != null">
+        chain_id = #{chainId,jdbcType=VARCHAR},
+      </if>
+      <if test="txHash != null">
+        tx_hash = #{txHash,jdbcType=VARCHAR},
+      </if>
+      <if test="destAddress != null">
+        dest_address = #{destAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="fromAddress != null">
+        from_address = #{fromAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="operateCount != null">
+        operate_count = operate_count +1,
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+    </set>
+    where unlock_record_id = #{unlockRecordId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByStatus" resultMap="BaseResultMap">
+  	select * from unlock_coin_record where status=#{status}
+  </select>
+  
+</mapper>

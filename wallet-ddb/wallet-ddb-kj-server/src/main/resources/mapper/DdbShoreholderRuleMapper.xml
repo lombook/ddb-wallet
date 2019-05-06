@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbkjserver.mapper.DdbShoreholderRuleMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbShoreholderRule">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="level_seq_no" jdbcType="INTEGER" property="levelSeqNo" />
+    <result column="upgrade_conditions" jdbcType="VARCHAR" property="upgradeConditions" />
+    <result column="level_define" jdbcType="VARCHAR" property="levelDefine" />
+    <result column="level_cname" jdbcType="VARCHAR" property="levelCname" />
+    <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+    <result column="expiry_time" jdbcType="TIMESTAMP" property="expiryTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <select id="selectAllRule"  resultMap="BaseResultMap">
+    select 
+    	level_seq_no,
+    	upgrade_conditions,
+    	level_define,
+    	level_cname  
+    from ddb_shoreholder_rule 
+    where now()>= effective_time 
+	AND expiry_time > now()
+	order by level_seq_no
+  </select>
+</mapper>

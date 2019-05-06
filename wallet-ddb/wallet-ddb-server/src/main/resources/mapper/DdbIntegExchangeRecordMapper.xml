@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.DdbIntegExchangeRecordMapper">
+
+    
+    <select id="getRecord" parameterType ="com.jinglitong.wallet.ddbapi.model.view.DdbIntegExchangeRecordVo" resultType="com.jinglitong.wallet.ddbapi.model.DdbIntegExchangeRecord">
+    select 	amount,
+	real_name as realName,
+	real_cname as realCname,
+	integ_cname as integCname,
+	integ_name as integName,
+	type,
+	DATE_FORMAT(
+		create_time,
+		'%Y-%m-%d %H:%i:%s'
+	) AS createTime
+	 from ddb_integ_exchange_record where cust_id =#{custId} and type =#{type} order by create_time desc
+    </select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.ProductCategoryMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.ProductCategory" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="orders" property="orders" jdbcType="INTEGER" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="seoDescription" property="seodescription" jdbcType="VARCHAR" />
+    <result column="seoKeywords" property="seokeywords" jdbcType="VARCHAR" />
+    <result column="seoTitle" property="seotitle" jdbcType="VARCHAR" />
+    <result column="treePath" property="treepath" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+    <resultMap id="listResultMap" type="com.jinglitong.springshop.vo.request.ProductCategoryVo" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="orders" property="orders" jdbcType="INTEGER" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="seoDescription" property="seodescription" jdbcType="VARCHAR" />
+    <result column="seoKeywords" property="seokeywords" jdbcType="VARCHAR" />
+    <result column="seoTitle" property="seotitle" jdbcType="VARCHAR" />
+    <result column="treePath" property="treepath" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+    <result column="parentName" property="parentName" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectTree" resultType ="com.jinglitong.springshop.vo.request.CateTreeVo">
+	
+		select id,zid,name from product_category where parent_id = #{id}
+	</select>
+	
+	<select id="getCategoryList" parameterType="com.jinglitong.springshop.vo.request.ProductCategoryVo" resultMap="listResultMap">
+		select pc.*,p.`name` as parentName from product_category pc LEFT JOIN product_category p on pc.parent_id = p.id
+		order by pc.created_time desc
+		 
+	
+	</select>
+
+    <select id="selectByGrade" resultMap="BaseResultMap">
+        select * from product_category where grade = #{grade}
+    </select>
+</mapper>

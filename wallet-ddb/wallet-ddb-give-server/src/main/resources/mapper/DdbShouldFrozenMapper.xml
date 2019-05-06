@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.give.mapper.DdbShouldFrozenMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbShouldFrozen" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="inte_zid" property="inteZid" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR" />
+    <result column="rule_id" property="ruleId" jdbcType="VARCHAR" />
+    <result column="grow_rule_id" property="growRuleId" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="INTEGER" />
+    <result column="left_amount" property="leftAmount" jdbcType="INTEGER" />
+    <result column="rfrozen_amount" property="rfrozenAmount" jdbcType="INTEGER" />
+    <result column="proportion" property="proportion" jdbcType="VARCHAR" />
+    <result column="frozen_days" property="frozenDays" jdbcType="INTEGER" />
+    <result column="excute_time" property="excuteTime" jdbcType="TIMESTAMP" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="real_cname" property="realCname" jdbcType="VARCHAR" />
+    <result column="inte_name" property="inteName" jdbcType="VARCHAR" />
+    <result column="inte_cname" property="inteCname" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectByExcutime" resultMap="BaseResultMap">
+    select * from ddb_should_frozen where TO_DAYS(NOW()) >=TO_DAYS(excute_time) and left_amount > 0 order by create_time
+  </select>
+
+  <select id="selectByExcutimeBeforeToday" resultMap="BaseResultMap">
+    select * from ddb_should_frozen where TO_DAYS(NOW())-1 >=TO_DAYS(excute_time) and left_amount > 0 order by create_time
+  </select>
+
+  <select id="selectByShouldTransferId" resultMap="BaseResultMap">
+    select * from ddb_should_frozen where zid = #{shouldId}
+  </select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.give.mapper.AppWalletMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.AppWallet">
+
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="wallet_name" jdbcType="VARCHAR" property="walletName" />
+    <result column="company_zid" jdbcType="VARCHAR" property="companyZid" />
+    <result column="sms_reg_code" jdbcType="VARCHAR" property="smsRegCode" />
+    <result column="sms_validation_code" jdbcType="VARCHAR" property="smsValidationCode" />
+    <result column="must_invite" jdbcType="BIT" property="mustInvite" />
+    <result column="mail_title" jdbcType="VARCHAR" property="mailTitle" />
+    <result column="show_financing" jdbcType="BIT" property="showFinancing" />
+    <result column="show_auto_invest" jdbcType="BIT" property="showAutoInvest" />
+    <result column="state" jdbcType="BIT" property="state" />
+    <result column="protocl_zid" jdbcType="VARCHAR" property="protoclZid" />
+    <result column="download_page" jdbcType="VARCHAR" property="downloadPage" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="created_user" jdbcType="VARCHAR" property="createdUser" />
+    <result column="updated_user" jdbcType="VARCHAR" property="updatedUser" />
+  </resultMap>
+
+  <select id="selectAppWalletList" resultType="java.util.Map">
+    select aw.id,aw.zid,aw.created_time,aw.created_user,aw.company_zid,aw.download_page,
+    aw.mail_title,aw.must_invite,aw.protocl_zid,aw.show_auto_invest,
+    aw.show_financing,aw.sms_reg_code,aw.sms_validation_code,
+    aw.state,aw.updated_user,aw.update_time,aw.wallet_name,ci.company_name,
+    ap.name,ap.protocol_url from app_wallet  aw left join company_info ci
+    on aw.company_zid = ci.zid left join app_protocol ap  on aw.protocl_zid=ap.zid
+    GROUP BY aw.id
+    order by aw.created_time
+  </select>
+
+  <select id="selectByZid" resultMap="BaseResultMap">
+    select * from app_wallet where zid = #{id}
+  </select>
+
+  <select id="getProtocolMap" parameterType="java.lang.String" resultType="java.lang.String">
+  select ap.protocol_url url  from app_wallet aw left join app_protocol ap on
+  aw.protocl_zid=ap.zid  where  aw.zid=#{appId}
+  </select>
+  
+  <select id="selectWalletName" resultType="java.util.Map">
+    select zid,wallet_name walletName from app_wallet
+    <where>
+      <if test="appId!=null and appId!=''">
+        zid = #{appId}
+      </if>
+    </where>
+  </select>
+</mapper>

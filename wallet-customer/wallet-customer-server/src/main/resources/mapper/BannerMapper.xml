@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.server.mapper.BannerMapper">
+    <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.AppBanner">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="ban_id" property="banId" jdbcType="VARCHAR"/>
+        <result column="ban_name" property="name" jdbcType="VARCHAR"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="order_id" property="orderId" jdbcType="VARCHAR"/>
+        <result column="click_type" property="clickType" jdbcType="TINYINT"/>
+        <result column="click_id" property="clickId" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="TINYINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="voMap" type="com.jinglitong.wallet.api.model.view.AppBannerVO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="ban_id" property="banId" jdbcType="VARCHAR"/>
+        <result column="ban_name" property="name" jdbcType="VARCHAR"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="order_id" property="orderId" jdbcType="VARCHAR"/>
+        <result column="click_type" property="clickType" jdbcType="TINYINT"/>
+        <result column="click_id" property="clickId" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="TINYINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+        <result column="wallet_name" property="walletName" jdbcType="VARCHAR" />
+
+    </resultMap>
+    <select id="getBannerList" resultMap="voMap">
+        select a.*,aw.wallet_name from app_banner a left join app_wallet aw on a.app_id =aw.zid
+        <where>
+            <if test="name !=null and name != ''">
+                and a.ban_name like CONCAT('%',#{name},'%' )
+            </if>
+            <if test="state !=null and state != ''">
+                and a.state =#{state}
+            </if>
+            <if test="appId!=null and appId!=''">
+               and a.app_id = #{appId}
+            </if>
+        </where>
+        order by state DESC, ABS(order_id) DESC,update_time DESC
+    </select>
+    
+    <select id="getAppBanners" resultMap="BaseResultMap">
+    	select * from app_banner a  
+    	
+    	 
+    	<where>
+    	state=1
+            
+            <if test="appId!=null and appId!=''">
+               and  a.app_id = #{appId}
+            </if>
+        </where>
+    	
+    	
+    	order by CAST(order_id AS DECIMAL) ,update_time desc
+    </select>
+    
+    <resultMap type="com.jinglitong.wallet.api.model.AppNotice" id="AppNoticesMap">
+    	<id column="notice_id" property="noticeId" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="sub_title" property="subTitle" jdbcType="VARCHAR"/>
+        <result column="view_ctime" property="viewCtime" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    </resultMap>
+    <select id="getAppNotices" resultMap="AppNoticesMap">
+    	select notice_id ,title, sub_title, view_ctime, create_time from app_notice where state=1 order by is_top desc,order_top desc,create_time desc
+    </select>
+
+</mapper>

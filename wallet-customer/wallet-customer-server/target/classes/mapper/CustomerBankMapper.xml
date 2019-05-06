@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.server.mapper.CustomerBankMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.CustomerBank">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="active_address" jdbcType="VARCHAR" property="activeAddress" />
+    <result column="cardholder" jdbcType="VARCHAR" property="cardholder" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="flag" jdbcType="BIT" property="flag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, zid, cust_id, bank_name, img_url, active_address, cardholder, card_no, flag, 
+    create_time, update_time
+  </sql>
+  <delete id="deleteByZid" parameterType="java.lang.String">
+    update customer_bank set flag = 0 where zid = #{zid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

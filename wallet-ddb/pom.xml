@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>wallet</artifactId>
+        <groupId>com.jinglitong</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>wallet-ddb</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+
+
+    <modules>
+        <module>wallet-ddb-api</module>
+        <module>wallet-ddb-server</module>
+		<module>wallet-ddb-kj-server</module>
+		<module>wallet-ddb-report-server</module>
+        <module>wallet-ddb-check-server</module>
+        <module>wallet-ddb-give-server</module>
+        <module>wallet-ddb-send-server</module>
+  </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.jinglitong.wallet</groupId>
+                <artifactId>wallet-ddb-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jinglitong.wallet</groupId>
+                <artifactId>wallet-ddb-server</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jinglitong.wallet</groupId>
+                <artifactId>wallet-ddb-kj-server</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jinglitong.wallet</groupId>
+                <artifactId>wallet-ddb-report-server</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jinglitong.wallet</groupId>
+                <artifactId>wallet-ddb-check-server</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jinglitong.wallet</groupId>
+                <artifactId>wallet-ddb-give-server</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jinglitong.wallet</groupId>
+                <artifactId>wallet-ddb-send-server</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+	
+	<build>
+		<finalName>wallet-ddb-server</finalName>
+	</build>
+	
+
+</project>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.ddbkjserver.mapper.DdbSecExpandDicMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbSecExpandDic" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="rule_id" property="ruleId" jdbcType="VARCHAR" />
+    <result column="inte_amount" property="inteAmount" jdbcType="INTEGER" />
+    <result column="inte_id" property="inteId" jdbcType="VARCHAR" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+    <result column="expiry_time" property="expiryTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="ddbSecExpandDicsDetail" resultType="com.jinglitong.wallet.ddbapi.model.logic.SecExpandDicInfo">
+ 	SELECT _dic.zid zid,_dic.rule_id ruleId,_dic.inte_amount inteAmount,_dic.inte_id inteId,_acc.real_name realName,_acc.real_cname realCname
+	  FROM ddb_sec_expand_dic _dic left join ddb_integral_account _acc on _dic.inte_id=_acc.zid
+	 WHERE now()>=_dic.effective_time
+	   AND _dic.expiry_time > now()
+	   AND _acc.state =1
+	 ORDER by _dic.rule_id asc
+  </select>
+
+</mapper>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.springshop.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Product">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="caption" jdbcType="VARCHAR" property="caption" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="isList" jdbcType="BIT" property="islist" />
+    <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="store_id" jdbcType="VARCHAR" property="storeId" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="product_category_id" jdbcType="VARCHAR" property="productCategoryId" />
+    <result column="benchmarkPrice" jdbcType="DECIMAL" property="benchmarkprice" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="introduction" jdbcType="LONGVARCHAR" property="introduction" />
+    <result column="productImages" jdbcType="LONGVARCHAR" property="productimages" />
+    <result column="specificationItems" jdbcType="LONGVARCHAR" property="specificationitems" />
+  </resultMap>
+
+  <resultMap id="productResponseMap" type="com.jinglitong.springshop.vo.response.ProductResponseVo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+   <association property="sku" javaType="com.jinglitong.springshop.entity.Sku">
+       <id column="skuId" property="id" jdbcType="INTEGER" />
+       <result column="skuZid" property="zid" jdbcType="VARCHAR" />
+       <result column="price" property="price" jdbcType="DECIMAL" />
+       <result column="currencySign" property="currencyId" jdbcType="VARCHAR" />
+       <result column="price_code" property="priceCode" jdbcType="VARCHAR" />
+       <result column="integral_price" property="integralPrice" jdbcType="DECIMAL" />
+       <result column="integral_code" property="integralCode" jdbcType="VARCHAR" />
+   </association>
+  </resultMap>
+  
+  	<resultMap id="updateProductMap" type="com.jinglitong.springshop.vo.request.ProductToUpdateParam">
+		<result column="zid" jdbcType="VARCHAR" property="zid" />
+		<result column="sn" jdbcType="VARCHAR" property="sn" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="image" jdbcType="VARCHAR" property="image" />
+		<result column="categoryId" jdbcType="VARCHAR" property="categoryId" />
+		<result column="caption" jdbcType="VARCHAR" property="caption" />
+		<result column="weight" jdbcType="VARCHAR" property="weight" />
+		<result column="weightUnit" jdbcType="VARCHAR" property="weightUnit" />
+		<result column="brandId" jdbcType="VARCHAR" property="brandId" />
+		<result column="isList" jdbcType="BIT" property="isList" />
+		<result column="memo" jdbcType="VARCHAR" property="memo" />
+		<result column="keyword" jdbcType="VARCHAR" property="keyword" />
+		<result column="introduction" jdbcType="VARCHAR" property="introduction" />
+		<result column="storeId" jdbcType="VARCHAR" property="storeId" />
+		<collection property="priceCurrencyVo" ofType="com.jinglitong.springshop.vo.request.PriceCurrencyVo">
+		    <result column="svalue" jdbcType="DECIMAL" property="svalue" />
+		    <result column="djbValue" jdbcType="DECIMAL" property="djbValue" />
+			<result column="pzid" property="pzid" jdbcType="DECIMAL" />
+			<result column="price" property="price" jdbcType="DECIMAL" />
+			<result column="priceCode" property="priceCode" jdbcType="VARCHAR" />
+			<result column="integralPrice" property="integralPrice" jdbcType="DECIMAL" />
+			<result column="integralCode" property="integralCode" jdbcType="VARCHAR" />
+			<result column="isDefault" property="isDefault" jdbcType="BIT" />
+		</collection>
+	</resultMap>
+  
+  
+  <resultMap id="productDetailMap" type="com.jinglitong.springshop.vo.response.ProductDetailVo">
+    <result column="zid" jdbcType="VARCHAR" property="zid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="caption" jdbcType="VARCHAR" property="caption" />    
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="weightUnit" jdbcType="VARCHAR" property="weightUnit" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="isList" jdbcType="INTEGER" property="isList" />
+    <result column="svalue" jdbcType="DECIMAL" property="svalue" /> 
+    <result column="djbValue" jdbcType="DECIMAL" property="djbValue" />   
+    
+    
+   <collection property="skuPriceList" ofType="com.jinglitong.springshop.vo.response.SkuPriceVo">
+       <result column="spzid" property="zid" jdbcType="VARCHAR" />
+       <result column="sku_id" property="skuId" jdbcType="VARCHAR" />
+       <result column="price_type" property="priceType" jdbcType="INTEGER" />
+    	<result column="is_default" property="isDefault" jdbcType="INTEGER" />
+       <result column="price" property="price" jdbcType="DECIMAL" />       
+       <result column="price_code" property="priceCode" jdbcType="VARCHAR" />
+       <result column="integral_price" property="integralPrice" jdbcType="DECIMAL" />
+       <result column="integral_code" property="integralCode" jdbcType="VARCHAR" />
+   </collection>
+  </resultMap>
+  
+    	<resultMap id="listProductMap" type="com.jinglitong.springshop.vo.response.ProductListVo">
+		<result column="id" jdbcType="VARCHAR" property="id" />
+		<result column="zid" jdbcType="VARCHAR" property="zid" />
+		<result column="sn" jdbcType="VARCHAR" property="sn" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="categName" jdbcType="VARCHAR" property="categName" />
+		<result column="currencySign" jdbcType="VARCHAR" property="currencySign" />
+		<result column="currencyName" jdbcType="VARCHAR" property="currencyName" />
+		<result column="currencyId" jdbcType="VARCHAR" property="currencyId" />
+		<result column="isList" jdbcType="BIT" property="isList" />
+		<result column="createdTime" jdbcType="VARCHAR" property="createdTime" />
+		<result column="updatedTime" jdbcType="VARCHAR" property="updatedTime" />
+		<result column="svalue" jdbcType="DECIMAL" property="svalue" />
+		<result column="djbValue" jdbcType="DECIMAL" property="djbValue" />
+		<result column="supportIntegral" jdbcType="VARCHAR" property="supportIntegral" />
+		<collection property="integerProductVo" ofType="com.jinglitong.springshop.vo.response.IntegerProductVo">
+		    <result column="price" jdbcType="DECIMAL" property="price" />
+			<result column="integralCode" property="integralCode" jdbcType="DECIMAL" />
+			<result column="integralPrice" property="integralPrice" jdbcType="DECIMAL" />
+		</collection>
+	</resultMap>
+	
+  <select id="selectProductsOrder" resultMap="productResponseMap">
+	  select p.id id, p.zid zid,p.image image,p.`name` name, 
+	  	s.id skuId ,s.zid skuZid,s.price price ,s.price_code,s.integral_price ,s.integral_code ,
+	 	 c.currencySign currencySign
+	  from product p
+	  LEFT JOIN sku s
+	  on p.zid = s.product_id
+	  LEFT JOIN currency c
+	  on s.currency_id = c.zid
+	  where p.isList = 1
+	  and s.isDefault = 1
+    <if test="productCategoryId != '' and productCategoryId != null">
+      and p.product_category_id = #{productCategoryId}
+    </if>
+    <if test="keyword != '' and keyword != null " >
+        and  p.`name` like CONCAT(CONCAT('%',#{keyword},'%'))
+
+    </if>
+    <if test="currency != '' and currency != null " >
+        and  c.currencyCode = #{currency}
+    </if>
+    <if test="supportIntegral != null and supportIntegral != '' ">
+			and s.support_integral =#{supportIntegral}
+		</if>
+    <if test="sellNumOrder != ''  and sellNumOrder == true" >
+      order by p.sell_num ${sellNumOrderType},p.created_time DESC
+    </if>
+    <if test="benchmarkpriceOrder != '' and benchmarkpriceOrder == true" >
+      order by s.price ${benchmarkpriceOrderType},p.created_time DESC
+    </if>
+  </select>
+  
+	<select id="selectGoodsDetailsById" parameterType="java.lang.String" resultMap="productDetailMap">
+		SELECT
+		s.zid,
+		p.`name`,
+		p.caption,
+		p.weight,
+		p.weight_unit as weightUnit,
+		p.image,
+		p.introduction,
+		p.isList,
+		sp.zid spzid,
+		sp.sku_id,
+		sp.price,
+		sp.price_code,
+		sp.integral_price,
+		sp.integral_code,
+		sp.price_type,
+		sp.is_default
+		FROM
+		product p
+		LEFT JOIN sku s ON s.product_id = p.zid
+		LEFT JOIN sku_price sp on s.zid = sp.sku_id
+		WHERE
+		s.isDefault = 1
+		AND s.zid = #{id}
+
+	</select>
+
+	<select id="getProductList" parameterType ="com.jinglitong.springshop.vo.response.ProductListVo" resultMap ="listProductMap">
+	SELECT
+	p.zid AS id,
+	s.zid,
+	p.sn,
+	p.`name`,
+	pc.`name` AS categName,
+	c.currencySign,
+	c.currencyName,
+	p.isList,
+	p.created_time AS createdTime,
+	p.updated_time AS updatedTime,
+	sp.price,
+	sp.integral_code as integralCode,
+	sp.integral_price as integralPrice
+	FROM
+	product p
+	LEFT JOIN product_category pc ON p.product_category_id = pc.zid
+	LEFT JOIN sku s ON s.product_id = p.zid
+	LEFT JOIN sku_price sp ON sp.sku_id = s.zid
+	LEFT JOIN currency c ON c.zid = sp.currency_id
+	where 1=1 
+		<if test="sn != null and sn != '' ">
+			and p.sn =#{sn}
+		</if>
+		<if test="name != null and name != '' ">
+			and p.name like CONCAT('%',#{name},'%')
+		</if>
+		<if test="isList != null and isList != '' ">
+			and p.isList =#{isList}
+		</if>
+		<if test="currencyId != null and currencyId != '' ">
+			and s.currency_id =#{currencyId}
+		</if>
+		<if test="supportIntegral != null and supportIntegral != '' ">
+			and s.support_integral =#{supportIntegral}
+		</if>
+		order by p.created_time desc
+	</select>
+
+	<select id="seeProduct" parameterType ="com.jinglitong.springshop.vo.response.ProductSeeVo" resultType="com.jinglitong.springshop.vo.response.ProductSeeVo">
+		SELECT
+		s.zid,
+		pc.`name` AS categoryName,
+		c.currencyName,
+		p.sn,
+		p.`name`,
+		p.caption,
+		p.image,
+		p.weight_unit as weightUnit,
+		p.weight,
+		bd.`name` AS brandName,
+		p.isList,
+		p.memo,
+		p.keyword,
+		s.price,
+		p.introduction,
+		sei.s_value svalue,
+		sei.djb_value djbValue
+		FROM
+		product p
+		LEFT JOIN product_category pc ON p.product_category_id = pc.zid
+		LEFT JOIN sku s ON s.product_id = p.zid
+		LEFT JOIN sku_extend_info sei ON s.zid = sei.sku_id
+		LEFT JOIN currency c ON c.zid = s.currency_id
+		LEFT JOIN brand bd ON p.brand_id = bd.zid
+		WHERE
+		s.zid = #{zid}
+	</select>
+
+	<select id="toUpdateProduct" parameterType = "com.jinglitong.springshop.vo.request.ProductAddParam" resultMap ="updateProductMap">
+		SELECT
+		st.zid as storeId,
+		s.zid,
+		p.product_category_id AS categoryId,
+		p.sn,
+		p.`name`,
+		p.caption,
+		p.image,
+		p.weight_unit as weightUnit,
+		p.weight,
+		p.brand_id as brandId,
+		p.isList,
+		p.memo,
+		p.keyword,
+		p.introduction,
+		sei.s_value svalue,
+		sei.djb_value djbValue,
+		sp.zid as pzid,
+		sp.price,
+		sp.price_code as priceCode,
+		sp.integral_price as integralPrice,
+		sp.integral_code as integralCode,
+		sp.is_default as isDefault
+		FROM
+		store st
+		left join product p on st.zid = p.store_id 		
+		LEFT JOIN product_category pc ON p.product_category_id =
+		pc.zid
+		LEFT JOIN sku s ON s.product_id = p.zid
+		LEFT JOIN sku_price sp ON sp.sku_id = s.zid
+		LEFT JOIN sku_extend_info sei on sei.sku_price_id = sp.zid
+		WHERE s.isDefault = 1   and
+		s.zid = #{zid} order by sp.integral_price
+	</select>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.reportserver.mapper.AdminRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.AdminRole" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="admin_id" property="adminId" jdbcType="VARCHAR" />
+    <id column="role_id" property="roleId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="role" type="com.jinglitong.wallet.api.model.Role" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="role_id" property="roleId" jdbcType="VARCHAR" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="role_desc" property="roleDesc" jdbcType="VARCHAR" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="getRoleByAdminId" parameterType="String" resultMap="role">
+      SELECT r.role_id, r.role_name, r.role_desc, r.enable FROM admin_role ar, role r WHERE ar.`role_id` = r.`role_id` and ar.`admin_id` = #{adminId}
+
+  </select>
+</mapper>

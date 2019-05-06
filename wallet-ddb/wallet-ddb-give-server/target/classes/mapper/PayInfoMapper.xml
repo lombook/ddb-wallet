@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.give.mapper.PayInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.PayInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="z_id" jdbcType="VARCHAR" property="zId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="seller_order_no" jdbcType="VARCHAR" property="sellerOrderNo" />
+    <result column="coin_code" jdbcType="VARCHAR" property="coinCode" />
+    <result column="chain_id" jdbcType="VARCHAR" property="chainId" />
+    <result column="chain_type" jdbcType="VARCHAR" property="chainType" />
+    <result column="coin_id" jdbcType="VARCHAR" property="coinId" />
+    <result column="coin_type" jdbcType="VARCHAR" property="coinType" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+    <result column="notice_time" jdbcType="INTEGER" property="noticeTime" />
+    <result column="notice_status" jdbcType="INTEGER" property="noticeStatus" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="pay_address" jdbcType="VARCHAR" property="payAddress" />
+    <result column="receive_address" jdbcType="VARCHAR" property="receiveAddress" />
+    <result column="trade_hash" jdbcType="VARCHAR" property="tradeHash" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <association property="mainChain" column="chain_id"
+                 select="com.jinglitong.wallet.give.mapper.MainChainMapper.getMainChainById">
+    </association>
+    <association property="subChain" column="coin_id"
+                 select="com.jinglitong.wallet.give.mapper.SubChainMapper.selectById">
+    </association>
+  </resultMap>
+
+<select id="selectBySelerId" resultMap="BaseResultMap">
+  select * from pay_info where seller_id = #{id}
+</select>
+
+<select id="selectByApp" resultMap="BaseResultMap"  parameterType="com.jinglitong.wallet.api.model.PayInfo">
+select a.*,b.wallet_name as walletName from pay_info  a left join app_wallet b on a.app_id = b.zid 
+where 1=1 
+<if test="sellerId != null and sellerId != ''">
+ 	and a.seller_id  =#{sellerId}
+</if>
+<if test="id != null and id != ''">
+ 	and a.id  =#{id}
+</if>
+<if test="appId!= null and appId != ''">
+ 	and a.app_id =#{appId}
+</if>
+</select>
+</mapper>

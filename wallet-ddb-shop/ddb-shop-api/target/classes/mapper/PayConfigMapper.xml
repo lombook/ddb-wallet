@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.PayConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.PayConfig" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="isEnabled" property="isenabled" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="attributes" property="attributes" jdbcType="LONGVARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>

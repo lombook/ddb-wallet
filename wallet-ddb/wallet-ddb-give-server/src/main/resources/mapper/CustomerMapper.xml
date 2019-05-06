@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.give.mapper.CustomerMapper">
+    <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.Customer">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="cust_id" jdbcType="VARCHAR" property="custId"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="all_phone" jdbcType="VARCHAR" property="allPhone"/>
+        <result column="state" jdbcType="BIT" property="state"/>
+        <result column="invite_code" jdbcType="VARCHAR" property="inviteCode"/>
+        <result column="country_id" jdbcType="INTEGER" property="countryId"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+        <result column="language" jdbcType="VARCHAR" property="language"/>
+        <result column="origin" jdbcType="INTEGER" property="origin"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="certificate_state" property="certificateState"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="reg_way" jdbcType="INTEGER" property="regWay"/>
+        <result column="self_invite" jdbcType="VARCHAR" property="selfInvite"/>
+        <result column="tree_level" jdbcType="INTEGER" property="treeLevel"/>
+        <result column="app_id" property="appId" jdbcType="BIGINT" />
+
+    </resultMap>
+    <resultMap id="cus" type="com.jinglitong.wallet.api.model.logic.CustomerAndCountry">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="cust_id" jdbcType="VARCHAR" property="custId"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="phone" property="phone"/>
+        <result column="all_phone" property="allPhone"/>
+        <result column="state" property="state"/>
+        <result column="invite_code" property="inviteCode"/>
+        <result column="salt" property="salt"/>
+        <result column="language" property="language"/>
+        <result column="origin" property="origin"/>
+        <result column="remark" property="remark"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="country_id" property="countryId"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+        <association property="country" javaType="com.jinglitong.wallet.api.model.Country">
+            <id column="country_id" property="countryId"/>
+            <result column="nameEN" jdbcType="VARCHAR" property="nameen"/>
+            <result column="nameCH" jdbcType="VARCHAR" property="namech"/>
+            <result column="countryCode" jdbcType="VARCHAR" property="countrycode"/>
+            <result column="areaCode" jdbcType="VARCHAR" property="areacode"/>
+            <result column="type" jdbcType="INTEGER" property="type"/>
+            <result column="createdAt" jdbcType="TIMESTAMP" property="createdat"/>
+            <result column="updatedAt" jdbcType="TIMESTAMP" property="updatedat"/>
+        </association>
+    </resultMap>
+    <resultMap id="cust" type="com.jinglitong.wallet.api.model.logic.CustomerAndCountry">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="cust_id" jdbcType="VARCHAR" property="custId"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="phone" property="phone"/>
+        <result column="all_phone" property="allPhone"/>
+        <result column="state" property="state"/>
+        <result column="invite_code" property="inviteCode"/>
+        <result column="salt" property="salt"/>
+        <result column="language" property="language"/>
+        <result column="origin" property="origin"/>
+        <result column="remark" property="remark"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="country_id" property="countryId"/>
+        <result column="certificate_state" property="certificateState"/>
+        <result column="self_invite" property="selfInvite"/>
+		<result column="wallet_name" property="walletName" jdbcType="VARCHAR" />
+		<result column="app_id" property="appId" jdbcType="VARCHAR" />
+        <association property="country" column="country_id" javaType="com.jinglitong.wallet.api.model.Country"
+                     select="com.jinglitong.wallet.give.mapper.CountryMapper.selectById">
+        </association>
+    </resultMap>
+
+    <select id="getCustomerList" parameterType="CustSelVO" resultMap="cust">
+        SELECT cs.cust_id,cs.self_invite,
+        cs.account,cs.password,cs.phone,cs.remark,cs.origin,cs.all_phone,cs.state,cs.invite_code,cs.salt,cs.language,cs.created_time,cs.updated_time,cs.country_id,
+        cs.certificate_state,aw.wallet_name wallet_name,cs.app_id
+        FROM app_wallet aw left join customer cs on aw.zid = cs.app_id
+        <where>
+             cs.cust_id is not null
+            <if test="startTime!='' and endTime != '' and startTime != null and endTime != null">
+               and cs.created_time BETWEEN #{startTime} and #{endTime}
+            </if>
+            <if test="phone!=null and phone!=''">
+                and cs.phone = #{phone}
+            </if>
+            <if test="remark!=null and remark!=''">
+                and cs.remark = #{remark}
+            </if>
+            <if test="allPhone!=null and allPhone!=''">
+                and cs.all_phone = #{allPhone}
+            </if>
+            <if test="inviteCode!=null and inviteCode!=''">
+                and cs.self_invite = #{inviteCode}
+            </if>
+            <if test="countryCode!=null and countryCode!=''">
+                and cs.countryCode = #{countryCode}
+            </if>
+            <if test="state==true">
+                and cs.state = 1
+            </if>
+            <if test="state==false">
+                and cs.state = 0
+            </if>
+            <if test="account!=null and account!=''">
+                and cs.account like CONCAT(CONCAT('%',#{account},'%'))
+            </if>
+            <if test="appId!=null and appId!=''">
+                and app_id = #{appId}
+            </if>
+        </where>
+        order by cs.created_time DESC
+    </select>
+    
+    <resultMap id="BasicCust" type="com.jinglitong.wallet.api.model.BasicCustomerInfo">
+        <result column="account" property="account"/>
+        <result column="phone" property="cellphone"/>
+        <result column="cust_name" property="name"/>
+        <result column="idtype" property="idType"/>
+        <result column="idno" property="idNo"/>
+        <result column="countryname" property="country"/>
+        <result column="provinceName" property="province"/>
+        <result column="cityName" property="city"/>
+        <result column="origin" property="origin"/>
+        <result column="inviteCode" property="inviteCode"/>
+        <result column="createdtime" property="regTime"/>
+        <result column="remark" property="remark"/>
+        <result column="state" property="state"/>
+        <result column="app_id" property="appId"/>
+        <result column="self_invite" property="selfInvite"/>
+    </resultMap>
+    
+    
+    <select id="getBasicCustomerInfo" parameterType="java.util.Map" resultMap="BasicCust">
+    	select a.account account, a.phone phone,a.self_invite,b.cust_name cust_name,b.idType idtype,b.idNo idno,a.nameCH countryname, b.provinceName provinceName, b.cityName cityName,a.origin origin,
+		a.invite_code inviteCode,a.created_time createdtime,a.remark remark,a.state state,a.app_id app_id from
+		(select a.cust_id, a.account account,a.self_invite, a.phone phone,b.nameCH nameCH,a.origin origin,a.invite_code invite_code, a.created_time created_time,a.remark remark,a.state state,a.app_id app_id
+		 from customer a ,country b where a.country_id=b.country_id and a.account=#{account}
+        <if test="appId!=null and appId!=''">
+            and a.app_id = #{appId}
+        </if>
+		 )
+		a left join
+		 (select a.cust_id cust_id,a.cust_name cust_name,a.identity_no idNo,a.identity_type idType,b.name provinceName, c.name cityName from identity_info a,area_dic b,area_dic c 
+		where a.province_id=b.area_id and a.city_id=c.area_id and a.auditstate=1
+        ) b on a.cust_id=b.cust_id
+    </select>
+    <update id="updCustomerInfo" parameterType="java.util.Map">
+    	update customer set remark=#{remark} ,state=#{state} where account=#{account} and app_id = #{appId}
+    </update>
+    
+    <select id="selectByCusId" resultMap="BaseResultMap">
+        select * from customer where cust_id = #{id}
+    </select>
+    
+	<select id="getTheCustByCode" resultMap="BaseResultMap" >
+    select * from customer where self_invite =#{param1} 
+    </select>
+    <select id="getCustByCode" resultMap="BaseResultMap" >
+    select * from customer where self_invite =#{param1} and app_id=#{param2}
+    </select>
+    
+    <select id="getInvitedCustomers" resultMap="BaseResultMap">
+    	select account ,created_time from customer where invite_code=#{code} order by created_time desc
+    </select>
+    <select id="getInvitors" resultMap="cust">
+    	SELECT cs.cust_id,cs.self_invite,
+        cs.account,cs.password,cs.phone,cs.remark,cs.origin,cs.all_phone,cs.state,cs.invite_code,cs.salt,cs.language,created_time,cs.updated_time,cs.country_id,
+        cs.certificate_state
+        FROM customer cs where cs.invite_code=#{inviteCode} and cs.state=1
+        <if test="appId!=null and appId!=''">
+            and app_id = #{appId}
+        </if>
+            order by cs.created_time desc
+    </select>
+    <select id="getCustomerInfo" resultMap="cust">
+    SELECT cs.cust_id,cs.self_invite,
+        cs.account,cs.password,cs.phone,cs.remark,cs.origin,cs.all_phone,cs.state,cs.invite_code,cs.salt,cs.language,created_time,cs.updated_time,cs.country_id,
+        cs.certificate_state
+        FROM customer cs where cs.cust_id=#{id}
+    
+    </select>
+
+    <select id="selectByUsername" resultMap="BaseResultMap">
+        select * from customer where account = #{account} and app_id =#{appId}
+    </select>
+
+    <select id="selectCounts" resultType="Integer">
+        select Count(*) from customer
+        <where>
+            state = 1
+            <if test="appId!=null and appId!=''">
+                and app_id = #{appId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBySelCode" resultMap="BaseResultMap">
+        select * from customer where self_invite = #{inviteCode} and app_id = #{appId}
+    </select>
+
+    <select id="selectByCustId" resultMap="BaseResultMap">
+        select * from customer where cust_id = #{custId}
+    </select>
+
+    <select id="updateByCustId" resultMap="BaseResultMap">
+       update customer set invite_code = #{inviteCode} where cust_id = #{custId}
+    </select>
+
+
+
+</mapper>

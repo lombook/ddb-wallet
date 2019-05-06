@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.job.mapper.FrozenReleaseLogsMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.api.model.FrozenReleaseLogs" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="log_id" property="logId" jdbcType="VARCHAR" />
+    <result column="detail_id" property="detailId" jdbcType="VARCHAR" />
+    <result column="ledger_adress" property="ledgerAdress" jdbcType="VARCHAR" />
+    <result column="target_address" property="targetAddress" jdbcType="VARCHAR" />
+    <result column="source_amount" property="sourceAmount" jdbcType="VARCHAR" />
+    <result column="proportion" property="proportion" jdbcType="INTEGER" />
+    <result column="pre_send_amount" property="preSendAmount" jdbcType="VARCHAR" />
+    <result column="suf_send_amount" property="sufSendAmount" jdbcType="VARCHAR" />
+    <result column="send_amount" property="sendAmount" jdbcType="VARCHAR" />
+    <result column="pad_amount" property="padAmount" jdbcType="VARCHAR" />
+    <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+    <result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP" />
+    <result column="log_status" property="logStatus" jdbcType="INTEGER" />
+    <result column="wallet_id" property="walletId" jdbcType="VARCHAR" />
+    <result column="pay_hash" property="payHash" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <select id="selectByWRid" resultMap="BaseResultMap">
+    SELECT l.send_amount FROM frozen_release_logs l 
+    LEFT JOIN frozen_release_detail_rule d ON  l.`detail_id` = d.`detail_id` 
+    WHERE l.`wallet_id` = #{param1} AND d.`rule_id` = #{param2}
+  </select>
+
+  <select id="selectByLogId" resultMap="BaseResultMap">
+    select * from frozen_release_logs where log_id = #{logId}
+  </select>
+
+  <select id="selectByDetailIdAndTrue" resultMap="BaseResultMap">
+    SELECT * FROM frozen_release_logs WHERE wallet_id = #{param1}  AND log_status = 0
+  </select>
+</mapper>

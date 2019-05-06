@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.DeviceInfoMapper">
+	<resultMap type="java.util.HashMap" id="accountInfo">
+		<result column="account" property="account"/>
+		<result column="areacode" property="countryCode"/>
+	</resultMap>
+	<select id="getAccountInfo" resultMap="accountInfo">
+		select a.account ,b.areacode from customer a,country b where a.country_id=b.country_id and
+		a.account=#{account} and a.app_id=#{appId}
+	</select>
+</mapper>

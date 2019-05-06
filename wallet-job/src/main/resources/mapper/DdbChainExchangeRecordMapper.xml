@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.wallet.job.mapper.DdbChainExchangeRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.DdbChainExchangeRecord" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="asset_account_id" property="assetAccountId" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="chain_id" property="chainId" jdbcType="VARCHAR" />
+    <result column="coin_id" property="coinId" jdbcType="VARCHAR" />
+    <result column="currency" property="currency" jdbcType="VARCHAR" />
+    <result column="cust_public_key" property="custPublicKey" jdbcType="VARCHAR" />
+    <result column="coin_amount" property="coinAmount" jdbcType="DECIMAL" />
+    <result column="token_adress" property="tokenAdress" jdbcType="VARCHAR" />
+    <result column="pay_hash" property="payHash" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <select id="getTransferDataByStateAndCount" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from ddb_chain_exchange_record where count &lt;=#{count} and state in (0,-1)
+  </select>
+  
+   <select id="getFailTransferDataByStateAndCount" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from ddb_chain_exchange_record where count =( 1 + #{count} ) and state = -1
+  </select>
+  
+    <select id="getCheckDataByState" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from ddb_chain_exchange_record where state = 1 and update_time &lt;= #{secondtime}
+  </select>
+</mapper>

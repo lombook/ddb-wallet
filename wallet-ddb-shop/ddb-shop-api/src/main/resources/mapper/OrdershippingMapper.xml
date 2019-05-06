@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.OrdershippingMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.Ordershipping" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="consignee" property="consignee" jdbcType="VARCHAR" />
+    <result column="deliveryCorp" property="deliverycorp" jdbcType="VARCHAR" />
+    <result column="deliveryCorpCode" property="deliverycorpcode" jdbcType="VARCHAR" />
+    <result column="deliveryCorpUrl" property="deliverycorpurl" jdbcType="VARCHAR" />
+    <result column="freight" property="freight" jdbcType="DECIMAL" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="shippingMethod" property="shippingmethod" jdbcType="VARCHAR" />
+    <result column="sn" property="sn" jdbcType="VARCHAR" />
+    <result column="trackingNo" property="trackingno" jdbcType="VARCHAR" />
+    <result column="zipCode" property="zipcode" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="VARCHAR" />
+    <result column="latitude" property="latitude" jdbcType="VARCHAR" />
+    <result column="coordinate_add" property="coordinateAdd" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectByOrderZid" resultType="com.jinglitong.springshop.entity.Ordershipping">
+    select * from ordershipping where order_id = #{zid};
+  </select>
+  <select id="selectOrderShippingByZid" resultType="com.jinglitong.springshop.vo.response.OrderShopingVo">
+  select op.zid,op.deliveryCorp,op.trackingNo,op.coordinate_add,op.image_url,o.order_hash from orders o, ordershipping op 
+   where  o.zid = op.order_id and 
+   op.zid = #{zid}
+  </select>
+</mapper>

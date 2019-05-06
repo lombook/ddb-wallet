@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jinglitong.springshop.mapper.SkuExtendInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.jinglitong.springshop.entity.SkuExtendInfo" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="VARCHAR" />
+    <result column="sku_id" property="skuId" jdbcType="VARCHAR" />
+    <result column="sku_price_id" property="skuPriceId" jdbcType="VARCHAR" />
+    <result column="s_value" property="sValue" jdbcType="DECIMAL" />
+    <result column="djb_value" property="djbValue" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <update id="updateBySkuId" >
+    update sku_extend_info set
+    sku_price_id = #{skuPriceId}
+    <if test="svalue != null">
+      ,s_value = #{svalue}
+    </if>
+    <if test="djbvalue != null">
+      ,djb_value = #{djbvalue}
+    </if>
+    where sku_price_id = #{skuPriceId}
+  </update>
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.ddbserver.mapper.CustomerRelationMapper">
+  <resultMap id="BaseResultMap" type="com.jinglitong.wallet.ddbapi.model.CustomerRelation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="friend_id" jdbcType="VARCHAR" property="friendId" />
+    <result column="friend_account" jdbcType="VARCHAR" property="friendAccount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cust_id, account, friend_id, friend_account, create_time, app_id
+  </sql>
+   <select id="selectByuserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from customer_relation
+    where cust_id = #{userId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByFriendId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from customer_relation
+    where friend_id = #{friendId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByUserIdAndFriendId" resultMap="BaseResultMap">
+        select * from customer_relation where cust_id = #{userid} and friend_id =#{friendid}
+    </select>
+  
+</mapper>

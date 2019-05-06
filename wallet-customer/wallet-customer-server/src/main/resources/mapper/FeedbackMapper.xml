@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinglitong.wallet.server.mapper.FeedbackMapper">
+	<resultMap type="com.jinglitong.wallet.api.model.Feedback" id="feedbackList">
+		<id column="id" property="id"/>
+		<result column="zid" property="zId"/>
+		<result column="account" property="custId"/>
+		<result column="type" property="type"/>
+		<result column="content" property="content"/>
+		<result column="imgs" property="imgs"/>
+		<result column="phone_mail" property="phoneOrMail"/>
+		<result column="createTime" property="createTime"/>
+		<result column="status" property="status"/>
+		<result column="dealer" property="dealer"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="feedback_result" property="feedback"/>
+		<result column="app_id" property="appId" jdbcType="VARCHAR" />
+		<result column="haveseen" property="haveseen"/>
+	</resultMap>
+	<select id="getFeedbackList" resultMap="feedbackList">
+		select a.id,a.type,a.content,a.imgs,a.phone_mail,a.create_time,a.status,a.feedback_result,
+		a.dealer,a.update_time,b.account,c.wallet_name from feedback a,customer b,wallet c where a.cust_id=b.cust_id AND c.cust_id = b.cust_id
+		<if test="beginTime !='' and endTime != '' and beginTime != null and endTime != null">
+            and a.create_time BETWEEN #{beginTime} and #{endTime}
+        </if>
+        <if test="account !='' and account != null ">
+            and b.account=#{account}
+        </if>
+        <if test="feedbackType !='' and feedbackType != null ">
+            and a.type=#{feedbackType}
+        </if>
+        <if test="status !='' and status != null ">
+            and a.status=#{status}
+        </if>
+        <if test="appId !='' and appId != null ">
+          and  a.app_id=#{appId}
+        </if>
+        order by create_time desc
+	</select>
+	
+	<select id="selectAlreadyRepliedFeedbackList" resultType="java.util.Map" >
+		SELECT feedback_id ,feedback_result, update_time,haveseen ,cust_id  
+		from feedback  where 
+		cust_id = #{param1} and app_id = #{param2} and status = '1'
+		order by update_time desc
+	</select>
+	
+	<select id="selectFeedbackDetail" resultType="java.util.Map" >
+		SELECT feedback_id ,cust_id, create_time,type,content,imgs,update_time,feedback_result  
+		from feedback where 
+		cust_id = #{param1} and feedback_id = #{param2} and app_id = #{param3} 
+		order by create_time desc
+	</select>
+	
+	<update id="upFeedbackStatus">
+	update feedback set haveseen = #{param3} where feedback_id = #{param2} and cust_id=#{param1} and app_id = #{param4} 
+	</update>
+	
+	<select id="selectUnReadFeedbackNum" resultType="Integer" >
+	select count(1)  from feedback where cust_id = #{param1} and haveseen = 0 and status = 1 and app_id = #{param2}
+	</select>
+</mapper>

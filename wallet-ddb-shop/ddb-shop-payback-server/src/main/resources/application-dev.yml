@@ -1,0 +1,54 @@
+server:
+  port: 8095
+
+spring:
+  datasource:
+    name: MySQL
+    url: jdbc:mysql://192.168.199.86:3306/PUB_WALLET_M?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: ddb_dev
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    initialSize: 5
+    maxActive: 1000
+    minIdle: 5
+    maxWait: 10000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,log4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    logSlowSql: true
+swagger:
+    host: 127.0.0.1:8095
+    enable: true
+logging:
+    config: classpath:logs.xml
+    level:
+         com.jinglitong.springshop.mapper: debug
+ #阿里云
+aliyun:
+    #aliMQ
+    mq:
+      accessKey: LTAID9WuJzY52Bo8
+      secretKey: ICYBMeD7NyjqzGwFlsH1GjFgMFc8Sk
+      server.addr: http://MQ_INST_1383127512168997_BalJMFxY.mq-internet-access.mq-internet.aliyuncs.com:80
+      order.topic: DDB_TEST_MQ
+      #支付法币为0
+      order.nonepaynotice.group: GID_NONEPAY_NOTICE
+      order.nonepaynotice.tag: tag_nonepaynotice
+    #ali邮箱
+    mail:
+      accessKey: LTAIwhiWFBrVVCCe
+      secret:  FSf8fEcVKVQHnT5kQs9xLBc7l1LHI4
+      regionId: cn-hangzhou
+      accountName: wallet@dabtland.cn
+#总账支付邮件账户
+payAcc_email_address: yaoxl@dabland.cn
+#总账支付最小额度提醒
+payAcc.amount: 10000
